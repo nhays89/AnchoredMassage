@@ -1,31 +1,44 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import controller.PatientCardListener;
-
-public class PatientTablePanel extends AbstractTablePanel implements PropertyChangeListener {
+/**
+ * 
+ * @author Nicholas A. Hays
+ * 
+ *         Panel displayed in a tabular format which allows users to interact
+ *         with the search results.
+ */
+public class PatientTablePanel extends AbstractTablePanel {
 
 	/**
-	 * 
+	 * Default serial id. 
 	 */
 	private static final long serialVersionUID = 6538944986110021190L;
-	private PatientCardListener myPatientPanelListener;
+	
+	/**
+	 * The patient table. 
+	 */
 	JTable myPatientTable;
+	
+	/**
+	 * Default table model. 
+	 */
 	TableModel myPatientTableModel;
-
+	
+	/**
+	 * Constructs the Table Panel. Displays a tabular grid of cells that correspond to 
+	 * data in the table model. 
+	 */
 	public PatientTablePanel() {
 		super(Color.CYAN);
-
+		this.setLayout(new BorderLayout());
 		myPatientTableModel = new AbstractTableModel() {
-		
-
 			/**
 			 * 
 			 */
@@ -36,7 +49,7 @@ public class PatientTablePanel extends AbstractTablePanel implements PropertyCha
 			}
 
 			public int getRowCount() {
-				return 10;
+				return 100;
 			}
 
 			public Object getValueAt(int row, int col) {
@@ -46,19 +59,7 @@ public class PatientTablePanel extends AbstractTablePanel implements PropertyCha
 		myPatientTable = new JTable(myPatientTableModel);
 		JScrollPane myPatientScrollPane = new JScrollPane(myPatientTable);
 		myPatientTable.setShowGrid(true);
-		add(myPatientScrollPane);
+		add(myPatientScrollPane, BorderLayout.CENTER);
 
 	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		String propName = evt.getPropertyName();
-		if (propName.equals("patientTablePanel")) {
-			System.out.println(" in " + this.getClass().getSimpleName()+ ", getting the" + propName + "object");
-			myPatientPanelListener = (PatientCardListener) evt.getNewValue();
-			System.out.println("in " + this.getClass().getSimpleName()+ ", setting button action listener");
-			myPatientTableModel.addTableModelListener(myPatientPanelListener);
-		}
-	}
-
 }

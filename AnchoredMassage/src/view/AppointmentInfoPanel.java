@@ -1,44 +1,59 @@
 package view;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import controller.AppointmentCardListener;
+import model.Appointment;
 
-
-public class AppointmentInfoPanel extends AbstractInfoPanel implements PropertyChangeListener{
+/**
+ * 
+ * @author Nicholas A. Hays
+ * 
+ *         Panel that will display and update information relating to each tuple
+ *         of the appointment table.
+ */
+public class AppointmentInfoPanel extends AbstractInfoPanel {
 
 	/**
-	 * 
+	 * Default serial id.
 	 */
 	private static final long serialVersionUID = 6342333683011977975L;
+
+	/**
+	 * Submit Button.
+	 */
 	private JButton myAppointmentSubmitBtn;
-	private AppointmentCardListener myAppointmentListener;
-	private static String APPOINTMENT_LISTENER_PROP_NAME = "appointmentPanelListener";
-	
-	
-	
+
+	/**
+	 * Constructs the Appointment Info Panel.
+	 */
 	public AppointmentInfoPanel() {
 		super(Color.white);
 		myAppointmentSubmitBtn = new JButton("Appointment Submit");
 		myAppointmentSubmitBtn.setName("appointmentSubmitBtn");
 		this.add(myAppointmentSubmitBtn);
-		
+		myAppointmentSubmitBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				updateApptInfo();
+			}
+		});
 	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		String propName = evt.getPropertyName();
-		if(propName.equals(APPOINTMENT_LISTENER_PROP_NAME)) {
-			System.out.println(" in " + this.getClass().getSimpleName()+ ", getting the" + propName + "object");
-			myAppointmentListener = (AppointmentCardListener) evt.getNewValue();
-			System.out.println("in " + this.getClass().getSimpleName()+ ", setting button action listener");
-			myAppointmentSubmitBtn.addActionListener(myAppointmentListener);
-			
-		}
+	/**
+	 * Fires a property change event to notify the Appointment Card. 
+	 */
+	public void updateApptInfo() {
+		firePropertyChange("apptSubmitBtn", null, null);
+	}
+	/**
+	 * Retrieves data from text fields to be used a query. 
+	 * @return the Appointment object. 
+	 */
+	public Appointment getApptInfo() {
+		return new Appointment("afsd", "afsd", "afsd", "afsd", "afsd", "afsd", "afsd", "afsd");
 	}
 
 }

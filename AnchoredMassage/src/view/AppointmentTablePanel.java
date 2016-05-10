@@ -1,35 +1,39 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import controller.AppointmentCardListener;
-
-public class AppointmentTablePanel extends AbstractTablePanel implements PropertyChangeListener {
+/**
+ * 
+ * @author Nicholas A. Hays
+ * 
+ *         Panel displayed in a tabular format which allows users to interact
+ *         with the search results.
+ */
+public class AppointmentTablePanel extends AbstractTablePanel {
 
 	/**
-	 * 
+	 * Default serial id.
 	 */
 	private static final long serialVersionUID = 2114076967932626581L;
-	private AppointmentCardListener myAppointmentPanelListener;
+
 	JTable myAppointmentTable;
 	TableModel myAppointmentTableModel;
-	private static String APPOINTMENT_LISTENER_PROP_NAME = "appointmentPanelListener";
 
+	/**
+	 * Constructs an Appointment Table to be a component of the appointment
+	 * card.
+	 */
 	public AppointmentTablePanel() {
 		super(Color.red);
+		this.setLayout(new BorderLayout());
 		myAppointmentTableModel = new AbstractTableModel() {
-		
-			
-
 			/**
-			 * 
+			 * Default serial id.
 			 */
 			private static final long serialVersionUID = 1560767779827580324L;
 
@@ -38,7 +42,7 @@ public class AppointmentTablePanel extends AbstractTablePanel implements Propert
 			}
 
 			public int getRowCount() {
-				return 10;
+				return 100;
 			}
 
 			public Object getValueAt(int row, int col) {
@@ -48,19 +52,8 @@ public class AppointmentTablePanel extends AbstractTablePanel implements Propert
 		myAppointmentTable = new JTable(myAppointmentTableModel);
 		JScrollPane myTherpaistScrollPane = new JScrollPane(myAppointmentTable);
 		myAppointmentTable.setShowGrid(true);
-		add(myTherpaistScrollPane);
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		String propName = evt.getPropertyName();
-		if (propName.equals(APPOINTMENT_LISTENER_PROP_NAME)) {
-			System.out.println(" in " + this.getClass().getSimpleName() + ", getting the" + propName + "object");
-			myAppointmentPanelListener = (AppointmentCardListener) evt.getNewValue();
-			System.out.println("in " + this.getClass().getSimpleName() + ", setting button action listener");
-			myAppointmentTableModel.addTableModelListener(myAppointmentPanelListener);
-		}
-
+		myAppointmentTable.setFillsViewportHeight(true);
+		add(myTherpaistScrollPane, BorderLayout.CENTER);
 	}
 
 }

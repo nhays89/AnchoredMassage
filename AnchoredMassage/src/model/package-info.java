@@ -5,4 +5,4 @@
  * @author nicho
  *
  */
-package controller;
+package model;
