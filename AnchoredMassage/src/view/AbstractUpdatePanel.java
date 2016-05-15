@@ -10,7 +10,7 @@ import javax.swing.JPanel;
  * 
  *         Provides default implementation for each InfoPanel.
  */
-public abstract class AbstractInfoPanel extends JPanel {
+public abstract class AbstractUpdatePanel extends JPanel {
 	/**
 	 * Default serial id.
 	 */
@@ -21,7 +21,7 @@ public abstract class AbstractInfoPanel extends JPanel {
 	 * Sets the Color and dimensions of the Panel.
 	 * @param theColor the Color of the Background.
 	 */
-	public AbstractInfoPanel(Color theColor) {
+	public AbstractUpdatePanel(Color theColor) {
 		this.setPreferredSize(new Dimension(400, 1000));
 		this.setVisible(true);
 		this.setBackground(theColor);

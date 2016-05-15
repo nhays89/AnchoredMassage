@@ -15,7 +15,7 @@ import model.Appointment;
  *         Panel that will display and update information relating to each tuple
  *         of the appointment table.
  */
-public class AppointmentInfoPanel extends AbstractInfoPanel {
+public class AppointmentUpdatePanel extends AbstractUpdatePanel {
 
 	/**
 	 * Default serial id.
@@ -30,7 +30,7 @@ public class AppointmentInfoPanel extends AbstractInfoPanel {
 	/**
 	 * Constructs the Appointment Info Panel.
 	 */
-	public AppointmentInfoPanel() {
+	public AppointmentUpdatePanel() {
 		super(Color.white);
 		myAppointmentSubmitBtn = new JButton("Appointment Submit");
 		myAppointmentSubmitBtn.setName("appointmentSubmitBtn");

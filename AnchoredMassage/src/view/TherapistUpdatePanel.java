@@ -15,7 +15,7 @@ import model.Therapist;
  *         Panel that will display and update information relating to each tuple
  *         of the patient table.
  */
-public class TherapistInfoPanel extends AbstractInfoPanel {
+public class TherapistUpdatePanel extends AbstractUpdatePanel {
 
 	/**
 	 * Default serial id.
@@ -30,7 +30,7 @@ public class TherapistInfoPanel extends AbstractInfoPanel {
 	 * Constructs the Therapist Info Panel which acts a container for all its
 	 * sub components.
 	 */
-	public TherapistInfoPanel() {
+	public TherapistUpdatePanel() {
 		super(new Color(123, 12, 56));
 		myTherapistSubmitBtn = new JButton("Therapist Submit");
 		myTherapistSubmitBtn.setName("therapistSubmitBtn");

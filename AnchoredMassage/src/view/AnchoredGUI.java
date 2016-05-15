@@ -6,10 +6,16 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import com.jhlabs.awt.ParagraphLayout;
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 /**
  * 
@@ -52,11 +58,16 @@ public class AnchoredGUI extends JFrame {
 	 * default serial id.
 	 */
 	private static final long serialVersionUID = 7505147285638924755L;
-
 	/**
-	 * Constructs the Anchored Massage GUI.
+	 * database connection. 
 	 */
+	protected static SQLServerDataSource DATA_SOURCE;
+	/**
+	 * connection to database.
+	 */
+	
 	public AnchoredGUI() {
+		setupdb();
 		createCards();
 		myCards = new JPanel(new CardLayout());
 		myCards.add(myPatientCard, PATIENTCARD);
@@ -67,6 +78,16 @@ public class AnchoredGUI extends JFrame {
 		initGUI();
 	}
 
+	private void setupdb() {
+		DATA_SOURCE = new SQLServerDataSource();
+		DATA_SOURCE.setUser("nhays89");
+		DATA_SOURCE.setPassword("71907190");
+		DATA_SOURCE.setServerName("VADER\\SQLEXPRESS");
+		DATA_SOURCE.setInstanceName("VADER\\SQLEXPRESS");
+		DATA_SOURCE.setPortNumber(3119);
+		DATA_SOURCE.setDatabaseName("AnchoredMassage");
+	}
+
 	/**
 	 * Creates card components that will be managed by a card layout manager.
 	 */
@@ -74,14 +95,13 @@ public class AnchoredGUI extends JFrame {
 		myAppointmentCard = new AppointmentCard();
 		myPatientCard = new PatientCard();
 		myTherapistCard = new TherapistCard();
-
 	}
 
 	/**
 	 * The navigation bar.
 	 */
 	private void createNav() {
-		final JPanel navPanel = new JPanel(new FlowLayout());
+		final JPanel navPanel = new JPanel(new ParagraphLayout());
 		navPanel.setPreferredSize(new Dimension(200, 1000));
 		this.getContentPane().add(navPanel, BorderLayout.WEST);
 
@@ -115,9 +135,9 @@ public class AnchoredGUI extends JFrame {
 			}
 		});
 
-		navPanel.add(myPatientBtn);
-		navPanel.add(myTherapistBtn);
-		navPanel.add(myAppointmentBtn);
+		navPanel.add(myPatientBtn, ParagraphLayout.NEW_PARAGRAPH);
+		navPanel.add(myTherapistBtn, ParagraphLayout.NEW_PARAGRAPH);
+		navPanel.add(myAppointmentBtn, ParagraphLayout.NEW_PARAGRAPH);
 
 	}
 

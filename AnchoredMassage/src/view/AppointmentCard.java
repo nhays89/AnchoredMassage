@@ -4,7 +4,11 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JPanel;
+
+import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
+
 import model.Appointment;
+import view.AnchoredGUI;
 
 /**
  * 
@@ -21,7 +25,7 @@ public class AppointmentCard extends JPanel implements PropertyChangeListener {
 	/**
 	 * Info Panel.
 	 */
-	AppointmentInfoPanel myAppointmentInfoPanel;
+	AppointmentUpdatePanel myAppointmentUpdatePanel;
 	/**
 	 * Search Panel.
 	 */
@@ -36,13 +40,13 @@ public class AppointmentCard extends JPanel implements PropertyChangeListener {
 	 */
 	public AppointmentCard() {
 		setLayout(new BorderLayout());
-		myAppointmentInfoPanel = new AppointmentInfoPanel();
+		myAppointmentUpdatePanel = new AppointmentUpdatePanel();
 		myAppointmentSearchPanel = new AppointmentSearchPanel();
 		myAppointmentTablePanel = new AppointmentTablePanel();
-		add(myAppointmentInfoPanel, BorderLayout.EAST);
+		add(myAppointmentUpdatePanel, BorderLayout.EAST);
 		add(myAppointmentSearchPanel, BorderLayout.NORTH);
 		add(myAppointmentTablePanel, BorderLayout.CENTER);
-		myAppointmentInfoPanel.addPropertyChangeListener(this);
+		myAppointmentUpdatePanel.addPropertyChangeListener(this);
 		myAppointmentSearchPanel.addPropertyChangeListener(this);
 		myAppointmentTablePanel.addPropertyChangeListener(this);
 	}
@@ -54,7 +58,7 @@ public class AppointmentCard extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propName = evt.getPropertyName();
 		if (propName.equals("apptSubmitBtn")) {
-			System.out.println(myAppointmentInfoPanel.getApptInfo());
+			System.out.println(myAppointmentUpdatePanel.getApptInfo());
 			// appointment object evt.getNewValue();
 		}
 		if (propName.equals("apptSearchBtn")) {
@@ -63,7 +67,7 @@ public class AppointmentCard extends JPanel implements PropertyChangeListener {
 
 		}
 		if (propName.equals("apptTable")) {
-
+			
 		}
 		if (propName.equals("apptDeleteBtn")) {
 

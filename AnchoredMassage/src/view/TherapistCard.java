@@ -18,7 +18,7 @@ public class TherapistCard extends JPanel implements PropertyChangeListener {
 	/**
 	 * Therapist Info Panel.
 	 */
-	TherapistInfoPanel myTherapistInfoPanel;
+	TherapistUpdatePanel myTherapistUpdatePanel;
 	/**
 	 * Therapist Search Panel.
 	 */
@@ -38,13 +38,13 @@ public class TherapistCard extends JPanel implements PropertyChangeListener {
 	 */
 	public TherapistCard() {
 		setLayout(new BorderLayout());
-		myTherapistInfoPanel = new TherapistInfoPanel();
+		myTherapistUpdatePanel = new TherapistUpdatePanel();
 		myTherapistSearchPanel = new TherapistSearchPanel();
 		myTherapistTablePanel = new TherapistTablePanel();
-		add(myTherapistInfoPanel, BorderLayout.EAST);
+		add(myTherapistUpdatePanel, BorderLayout.EAST);
 		add(myTherapistSearchPanel, BorderLayout.NORTH);
 		add(myTherapistTablePanel, BorderLayout.CENTER);
-		myTherapistInfoPanel.addPropertyChangeListener(this);
+		myTherapistUpdatePanel.addPropertyChangeListener(this);
 		myTherapistSearchPanel.addPropertyChangeListener(this);
 		myTherapistTablePanel.addPropertyChangeListener(this);
 	}
@@ -57,7 +57,7 @@ public class TherapistCard extends JPanel implements PropertyChangeListener {
 		String propName = evt.getPropertyName();
 
 		if (propName.equals("therapistSubmitBtn")) {
-			System.out.println("Therapist:" + myTherapistInfoPanel.getTherapistData().getFName());
+			System.out.println("Therapist:" + myTherapistUpdatePanel.getTherapistData().getFName());
 
 			// appointment object evt.getNewValue();
 		}
