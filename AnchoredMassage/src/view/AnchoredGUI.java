@@ -3,17 +3,18 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.jhlabs.awt.ParagraphLayout;
+
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 
@@ -59,14 +60,23 @@ public class AnchoredGUI extends JFrame {
 	 */
 	private static final long serialVersionUID = 7505147285638924755L;
 	/**
-	 * database connection. 
+	 * database connection.
 	 */
 	protected static SQLServerDataSource DATA_SOURCE;
 	/**
 	 * connection to database.
 	 */
+	protected static Connection DB_CONNECTION;
+	/**
+	 *  Global Font style
+	 */
+	protected static Font FONT = new Font("Courier New", Font.PLAIN, 15);
 	
+	/**
+	 * Creates the main GUI of the application.
+	 */
 	public AnchoredGUI() {
+		
 		setupdb();
 		createCards();
 		myCards = new JPanel(new CardLayout());
@@ -77,15 +87,23 @@ public class AnchoredGUI extends JFrame {
 		createNav();
 		initGUI();
 	}
-
+	
+	/**
+	 * Setup database and server connections. 
+	 */
 	private void setupdb() {
 		DATA_SOURCE = new SQLServerDataSource();
 		DATA_SOURCE.setUser("nhays89");
-		DATA_SOURCE.setPassword("71907190");
+		DATA_SOURCE.setPassword("71907190"); 
 		DATA_SOURCE.setServerName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setInstanceName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setPortNumber(3119);
 		DATA_SOURCE.setDatabaseName("AnchoredMassage");
+		try {
+			DB_CONNECTION = DATA_SOURCE.getConnection();
+		} catch (SQLServerException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -145,10 +163,11 @@ public class AnchoredGUI extends JFrame {
 	 * Initializes the GUI.
 	 */
 	private void initGUI() {
-		setSize(1200, 1000);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double width = screenSize.getWidth();
+		double height = screenSize.getHeight();
+		this.setSize(new Dimension(( (int) width), (int) height));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-		pack();
 	}
-
 }
