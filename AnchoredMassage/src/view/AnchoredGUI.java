@@ -89,7 +89,7 @@ public class AnchoredGUI extends JFrame {
 	private void setupdb() {
 		DATA_SOURCE = new SQLServerDataSource();
 		DATA_SOURCE.setUser("nhays89");
-		DATA_SOURCE.setPassword({password}); //credentials go here
+		DATA_SOURCE.setPassword("71907190"); //credentials go here
 		DATA_SOURCE.setServerName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setInstanceName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setPortNumber(3119);
