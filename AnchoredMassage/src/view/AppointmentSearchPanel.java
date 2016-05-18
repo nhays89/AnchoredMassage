@@ -3,77 +3,98 @@ package view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
-import model.Appointment;
+import com.jhlabs.awt.ParagraphLayout;
 
 /**
  * 
  * @author Nicholas A. Hays
  * 
- *         Panel that will allow users to query and filter the appointment
- *         table.
+ *         Panel that will allow users to query and filter the patient table.
  */
 public class AppointmentSearchPanel extends AbstractSearchPanel {
 
 	/**
 	 * Default serial id.
 	 */
-	private static final long serialVersionUID = 2978537189128649888L;
+	private static final long serialVersionUID = 2549419250238970948L;
 
 	/**
-	 * Search Button.
+	 * patient search button.
 	 */
-	private JButton myAppointmentSearchBtn;
-
+	private JButton myApptSearchBtn;
 	/**
-	 * Text fields used for patient modification.
+	 * patient search labels.
 	 */
-	private JTextField myPatientTxt, myTherapistTxt, myTimeTxt;
+	private JLabel lblPatientID, lblTherapistID, lblStartTime;
+	/**
+	 * patient text fields.
+	 */
+	private JTextField txtPatientID, txtTherapistID, txtStartTime;
+	/**
+	 * current query string.
+	 */
+	public static String CURRENT_QUERY;
+	/**
+	 * text field length.
+	 */
+	private static int TEXT_FIELD_SIZE = 17;
 
 	/**
-	 * Constructs an Appointment Search Panel for the appointment card.
+	 * Constructs the Patient search panel.
 	 */
 	public AppointmentSearchPanel() {
-		super(Color.MAGENTA);
-		myAppointmentSearchBtn = new JButton("Appointment Search");
-		myAppointmentSearchBtn.setName("appointmentSearchBtn");
-		add(new JLabel("Patient: "));
-		add(new JLabel("Therapist: "));
-		add(new JLabel("Time: "));
-		this.add(myAppointmentSearchBtn);
-		myAppointmentSearchBtn.addActionListener(new ActionListener() {
+		super(Color.darkGray);
+		CURRENT_QUERY = "SELECT * FROM APPOINTMENT";
+		addComponents();
+
+	}
+
+	/**
+	 * adds components to the search panel.
+	 */
+	private void addComponents() {
+		TitledBorder title;
+		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
+		title.setTitlePosition(TitledBorder.TOP);
+		this.setBorder(title);
+		lblPatientID = new JLabel("Patient ID: ");
+		add(lblPatientID, ParagraphLayout.NEW_PARAGRAPH);
+		txtPatientID = new JTextField(TEXT_FIELD_SIZE);
+		add(txtPatientID, ParagraphLayout.NEW_LINE);
+		lblTherapistID = new JLabel("Therapist ID: ");
+		add(lblTherapistID, ParagraphLayout.NEW_PARAGRAPH);
+		txtTherapistID = new JTextField(TEXT_FIELD_SIZE);
+		add(txtTherapistID, ParagraphLayout.NEW_LINE);
+		lblStartTime = new JLabel("Start Time: ");
+		add(lblStartTime, ParagraphLayout.NEW_PARAGRAPH);
+		txtStartTime = new JTextField(TEXT_FIELD_SIZE);
+		add(txtStartTime, ParagraphLayout.NEW_LINE);
+		myApptSearchBtn = new JButton("Search");
+
+		myApptSearchBtn.addActionListener(new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				fireSearchNotification();
+			public void actionPerformed(ActionEvent e) {
+				updateSearchResults();
+
 			}
 		});
+		this.add(myApptSearchBtn);
 	}
 
 	/**
-	 * Fires a property change event to alert the appoitment card of
-	 * notifications.
+	 * Builds sql expression from the search fields.
 	 */
-	private void fireSearchNotification() {
-		this.firePropertyChange("apptSearchBtn", null, null);
-	}
-
-	/**
-	 * Retrieves the data from the search fields to generate a query.
-	 * 
-	 * @return the Appointment details.
-	 */
-	public Appointment getApptSearch() {
-		System.out.println("in here");
-		Appointment p = new Appointment("ID", "name", "nassme", "namedd", "naetme", "na2me", "nagme", "namxe");
-		System.out.println(p.getApptDate());
-		return p;
+	private void updateSearchResults() {
+		CURRENT_QUERY = "SELECT * FROM APPOINTMENT"; // to do
+		this.firePropertyChange("createResultSet", null, null);
 	}
 
 }

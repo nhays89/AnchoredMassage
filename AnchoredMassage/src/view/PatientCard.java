@@ -1,12 +1,7 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JPanel;
-import model.Patient;
-import model.PatientTableModel;
 
 /**
  * 
@@ -24,26 +19,26 @@ public class PatientCard extends JPanel {
 	/**
 	 * Patient Info Panel.
 	 */
-	private PatientUpdatePanel myPatientUpdatePanel;
+	private AppointmentUpdatePanel myPatientUpdatePanel;
 
 	/**
 	 * Patient Search Panel.
 	 */
-	private PatientSearchPanel myPatientSearchPanel;
+	private AppointmentSearchPanel myPatientSearchPanel;
 
 	/**
 	 * Patient Table Panel.
 	 */
-	private PatientTablePanel myPatientTablePanel;
+	private AppointmentTablePanel myPatientTablePanel;
 	
 	/**
 	 * Constructs the patient card to hold all sub panels. 
 	 */
 	public PatientCard() {
 		setLayout(new BorderLayout());
-		myPatientUpdatePanel = new PatientUpdatePanel();
-		myPatientSearchPanel = new PatientSearchPanel();
-		myPatientTablePanel = new PatientTablePanel();
+		myPatientUpdatePanel = new AppointmentUpdatePanel();
+		myPatientSearchPanel = new AppointmentSearchPanel();
+		myPatientTablePanel = new AppointmentTablePanel();
 		add(myPatientUpdatePanel, BorderLayout.EAST);
 		add(myPatientSearchPanel, BorderLayout.NORTH);
 		add(myPatientTablePanel, BorderLayout.CENTER);

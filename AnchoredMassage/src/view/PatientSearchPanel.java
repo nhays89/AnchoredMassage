@@ -4,13 +4,13 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 import com.jhlabs.awt.ParagraphLayout;
-
-import model.Patient;
 
 /**
  * 
@@ -41,23 +41,34 @@ public class PatientSearchPanel extends AbstractSearchPanel {
 	 * current query string.
 	 */
 	public static String CURRENT_QUERY;
+	/**
+	 * text field length.
+	 */
 	private static int TEXT_FIELD_SIZE = 17;
+
 	/**
 	 * Constructs the Patient search panel.
 	 */
 	public PatientSearchPanel() {
-		
-		super(Color.yellow);
+		super(Color.darkGray);
+		CURRENT_QUERY = "SELECT * FROM PATIENT";
 		addComponents();
-		
+
 	}
 
+	/**
+	 * adds components to the search panel.
+	 */
 	private void addComponents() {
+		TitledBorder title;
+		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
+		title.setTitlePosition(TitledBorder.TOP);
+		this.setBorder(title);
 		lblPatientID = new JLabel("Patient ID:");
 		add(lblPatientID, ParagraphLayout.NEW_PARAGRAPH);
 		txtPatientID = new JTextField(TEXT_FIELD_SIZE);
 		add(txtPatientID, ParagraphLayout.NEW_LINE);
-		lblPatientFName= new JLabel("Patient First Name:");
+		lblPatientFName = new JLabel("Patient First Name:");
 		add(lblPatientFName, ParagraphLayout.NEW_PARAGRAPH);
 		txtPatientFName = new JTextField(TEXT_FIELD_SIZE);
 		add(txtPatientFName, ParagraphLayout.NEW_LINE);
@@ -65,7 +76,8 @@ public class PatientSearchPanel extends AbstractSearchPanel {
 		add(lblPatientLName, ParagraphLayout.NEW_PARAGRAPH);
 		txtPatientLName = new JTextField(TEXT_FIELD_SIZE);
 		add(txtPatientLName, ParagraphLayout.NEW_LINE);
-		myPatientSearchBtn = new JButton("Patient Search Button");
+		myPatientSearchBtn = new JButton(" Search ");
+
 		myPatientSearchBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -76,27 +88,15 @@ public class PatientSearchPanel extends AbstractSearchPanel {
 		});
 		myPatientSearchBtn.setName("patientSearchBtn");
 		this.add(myPatientSearchBtn);
-		
+
 	}
 
 	/**
-	 * Generates an sql string from the search fields, sends the string to the Patient card,
-	 * Card then sends the string to the table panel, where the table panel
-	 * will take the string, turn it to a statement, then execute the statement. 
+	 * Builds sql expression from the search fields.
 	 */
 	private void updateSearchResults() {
-		 CURRENT_QUERY = "SELECT * FROM PATIENT";
-		this.firePropertyChange("patientSearchBtn", null, null);
-	}
-
-	/**
-	 * Retrieves the patient search results from the textfields to be used for
-	 * the query to the database.
-	 * 
-	 * @return the Patient object.
-	 */
-	public Patient getPatientSearch() {
-		return new Patient("IID", "ETHAN", "VICTORIA", null, null, null, null, null);
+		CURRENT_QUERY = "SELECT * FROM PATIENT"; // to do
+		this.firePropertyChange("createResultSet", null, null);
 	}
 
 }
