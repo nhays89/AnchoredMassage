@@ -67,16 +67,11 @@ public class AnchoredGUI extends JFrame {
 	 * connection to database.
 	 */
 	protected static Connection DB_CONNECTION;
-	/**
-	 *  Global Font style
-	 */
-	protected static Font FONT = new Font("Courier New", Font.PLAIN, 15);
 	
 	/**
 	 * Creates the main GUI of the application.
 	 */
 	public AnchoredGUI() {
-		
 		setupdb();
 		createCards();
 		myCards = new JPanel(new CardLayout());
@@ -94,7 +89,7 @@ public class AnchoredGUI extends JFrame {
 	private void setupdb() {
 		DATA_SOURCE = new SQLServerDataSource();
 		DATA_SOURCE.setUser("nhays89");
-		DATA_SOURCE.setPassword("71907190"); 
+		DATA_SOURCE.setPassword({password}); //credentials go here
 		DATA_SOURCE.setServerName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setInstanceName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setPortNumber(3119);
