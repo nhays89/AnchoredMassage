@@ -24,7 +24,7 @@ public abstract class AbstractSearchPanel extends JPanel {
 	 *            the Color of the Background.
 	 */
 	public AbstractSearchPanel(Color theColor) {
-		this.setPreferredSize(new Dimension(1000, 100));
+		this.setPreferredSize(new Dimension(1000, 75));
 		this.setVisible(true);
 		this.setBackground(theColor);
 	}
