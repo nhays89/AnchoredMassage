@@ -3,15 +3,20 @@ package view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 
-import model.Patient;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
+import com.jhlabs.awt.ParagraphLayout;
 
 /**
  * 
  * @author Nicholas A. Hays
  * 
- *         Panel that will allow users to query and filter the patient table.
+ *         Panel that will allow users to query and filter the therapist table.
  */
 public class TherapistSearchPanel extends AbstractSearchPanel {
 
@@ -19,42 +24,69 @@ public class TherapistSearchPanel extends AbstractSearchPanel {
 	 * Default serial id.
 	 */
 	private static final long serialVersionUID = 6187373824017488881L;
-
 	/**
-	 * Therapist search button.
+	 * therapist search button.
 	 */
-	private JButton myTherapistSearchBtn;
+	private JButton myTherapistSubmitBtn;
+	/**
+	 * therapist search labels.
+	 */
+	private JLabel lblTherapistID, lblTherapistFName, lblTherapistLName;
+	/**
+	 * therapist text fields.
+	 */
+	private JTextField txtTherapistID, txtTherapistFName, txtTherapistLName;
+	/**
+	 * current query string.
+	 */
+	public static String CURRENT_QUERY;
+	/**
+	 * text field length.
+	 */
+	private static int TEXT_FIELD_SIZE = 17;
 
 	public TherapistSearchPanel() {
-		super(Color.gray);
-		myTherapistSearchBtn = new JButton("Therapist Search");
-		myTherapistSearchBtn.setName("therapistSearchBtn");
-		add(myTherapistSearchBtn);
-		myTherapistSearchBtn.addActionListener(new ActionListener() {
+		super(Color.darkGray);
+		CURRENT_QUERY = "SELECT * FROM THERAPIST";
+		addComponents();
+	}
+	private void addComponents() {
+		TitledBorder title;
+		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
+		title.setTitlePosition(TitledBorder.TOP);
+		this.setBorder(title);
+		lblTherapistID = new JLabel("Therapist ID:");
+		add(lblTherapistID, ParagraphLayout.NEW_PARAGRAPH);
+		txtTherapistID = new JTextField(TEXT_FIELD_SIZE);
+		add(txtTherapistID, ParagraphLayout.NEW_LINE);
+		lblTherapistFName = new JLabel("Therapist First Name:");
+		add(lblTherapistFName, ParagraphLayout.NEW_PARAGRAPH);
+		txtTherapistFName = new JTextField(TEXT_FIELD_SIZE);
+		add(txtTherapistFName, ParagraphLayout.NEW_LINE);
+		lblTherapistLName = new JLabel("Therapist Last Name:");
+		add(lblTherapistLName, ParagraphLayout.NEW_PARAGRAPH);
+		txtTherapistLName = new JTextField(TEXT_FIELD_SIZE);
+		add(txtTherapistLName, ParagraphLayout.NEW_LINE);
+		myTherapistSubmitBtn = new JButton(" Search ");
+
+		myTherapistSubmitBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateSearchResults();
+
 			}
 		});
+		myTherapistSubmitBtn.setName("therapistSearchBtn");
+		this.add(myTherapistSubmitBtn);
+		
 	}
-
 	/**
-	 * Fires property change event to notify Therapist Card that changes may
-	 * occur.
+	 * Builds sql expression from the search fields.
 	 */
 	private void updateSearchResults() {
-		this.firePropertyChange("therapistSearchBtn", null, "search");
-	}
-
-	/**
-	 * Gets the therapist information from the respective text fields and sends
-	 * it to the therapist card.
-	 * 
-	 * @return the Therapist data to modify
-	 */
-	public Patient getTherapistSearch() {
-		return new Patient("IID", "VICTORIA", "VICTORIA", null, null, null, null, null);
+		CURRENT_QUERY = "SELECT * FROM THERAPIST"; // to do
+		this.firePropertyChange("createResultSet", null, null);
 	}
 
 }

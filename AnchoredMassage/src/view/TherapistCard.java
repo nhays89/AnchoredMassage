@@ -6,15 +6,13 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 
-import model.Patient;
-
 /**
  * 
  * @author Nicholas A. Hays
  * 
  *         Acts as a storage container for its Panel components.
  */
-public class TherapistCard extends JPanel implements PropertyChangeListener {
+public class TherapistCard extends JPanel {
 	/**
 	 * Therapist Info Panel.
 	 */
@@ -44,39 +42,9 @@ public class TherapistCard extends JPanel implements PropertyChangeListener {
 		add(myTherapistUpdatePanel, BorderLayout.EAST);
 		add(myTherapistSearchPanel, BorderLayout.NORTH);
 		add(myTherapistTablePanel, BorderLayout.CENTER);
-		myTherapistUpdatePanel.addPropertyChangeListener(this);
-		myTherapistSearchPanel.addPropertyChangeListener(this);
-		myTherapistTablePanel.addPropertyChangeListener(this);
-	}
-
-	/**
-	 * Handles all the property change events fired by the sub components of this object. 
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		String propName = evt.getPropertyName();
-
-		if (propName.equals("therapistSubmitBtn")) {
-			System.out.println("Therapist:" + myTherapistUpdatePanel.getTherapistData().getFName());
-
-			// appointment object evt.getNewValue();
-		}
-		if (propName.equals("therapistSearchBtn")) {
-			Patient findTherapist = myTherapistSearchPanel.getTherapistSearch();
-			System.out.println(findTherapist.getFName());
-			// make query to database
-			// get data and put data in temp storage object and then dump to
-			// container
-		}
-		if (propName.equals("apptTable")) {
-			// get data from line clicked
-			// call method on temp data object
-
-			// set patient fields from return data
-			// myPatientInfoPanel.setPatientFields(findPatient);
-		}
-		if (propName.equals("apptDeleteBtn")) {
-
-		}
+		myTherapistTablePanel.addPropertyChangeListener(myTherapistUpdatePanel);
+		myTherapistUpdatePanel.addPropertyChangeListener(myTherapistTablePanel);
+		myTherapistSearchPanel.addPropertyChangeListener(myTherapistTablePanel);
+	
 	}
 }
