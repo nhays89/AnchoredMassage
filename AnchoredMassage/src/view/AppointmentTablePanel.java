@@ -2,12 +2,14 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
@@ -25,7 +27,7 @@ import model.AnchoredTableModel;
  * 
  *         Panel displayed in a tabular format.
  */
-public class AppointmentTablePanel extends AbstractTablePanel
+public class AppointmentTablePanel extends JPanel
 		implements TableModelListener, ListSelectionListener, PropertyChangeListener {
 
 	/**
@@ -56,7 +58,6 @@ public class AppointmentTablePanel extends AbstractTablePanel
 	 * correspond to data in the table model.
 	 */
 	public AppointmentTablePanel() {
-		super(Color.darkGray);
 		this.setLayout(new BorderLayout());
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		myApptTable = new JTable();
@@ -64,6 +65,8 @@ public class AppointmentTablePanel extends AbstractTablePanel
 		JScrollPane myApptScrollPane = new JScrollPane(myApptTable);
 		myApptTable.setShowGrid(true);
 		add(myApptScrollPane, BorderLayout.CENTER);
+		this.setPreferredSize(new Dimension(600, 600));
+		this.setVisible(true);
 
 	}
 
@@ -88,7 +91,7 @@ public class AppointmentTablePanel extends AbstractTablePanel
 
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		System.out.println("in table changed");
+		//System.out.println("in table changed");
 		// to do
 	}
 

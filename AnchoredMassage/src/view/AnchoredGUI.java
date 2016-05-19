@@ -2,6 +2,7 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -89,7 +90,7 @@ public class AnchoredGUI extends JFrame {
 	private void setupdb() {
 		DATA_SOURCE = new SQLServerDataSource();
 		DATA_SOURCE.setUser("nhays89");
-		DATA_SOURCE.setPassword("71907190"); //credentials go here
+		DATA_SOURCE.setPassword("********"); //credentials go here
 		DATA_SOURCE.setServerName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setInstanceName("VADER\\SQLEXPRESS");
 		DATA_SOURCE.setPortNumber(3119);
@@ -114,11 +115,11 @@ public class AnchoredGUI extends JFrame {
 	 * The navigation bar.
 	 */
 	private void createNav() {
-		final JPanel navPanel = new JPanel(new ParagraphLayout());
+		final JPanel navPanel = new JPanel(new ParagraphLayout(50, 60, 12, 11, 4, 4));
 		navPanel.setPreferredSize(new Dimension(200, 1000));
 		this.getContentPane().add(navPanel, BorderLayout.WEST);
 
-		JButton myPatientBtn = new JButton("Patient");
+		JButton myPatientBtn = new JButton("     Patient     ");
 		myPatientBtn.addActionListener(new ActionListener() {
 
 			@Override
@@ -128,7 +129,7 @@ public class AnchoredGUI extends JFrame {
 			}
 		});
 
-		JButton myTherapistBtn = new JButton("Therapist");
+		JButton myTherapistBtn = new JButton("   Therapist   ");
 		myTherapistBtn.addActionListener(new ActionListener() {
 
 			@Override

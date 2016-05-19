@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -13,10 +14,10 @@ import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.jhlabs.awt.ParagraphLayout;
-
 
 /**
  * 
@@ -25,7 +26,7 @@ import com.jhlabs.awt.ParagraphLayout;
  *         Panel that will display and update information relating to each tuple
  *         of the appointment table.
  */
-public class AppointmentUpdatePanel extends AbstractUpdatePanel implements PropertyChangeListener {
+public class AppointmentUpdatePanel extends JPanel implements PropertyChangeListener {
 
 	/**
 	 * Default serial id.
@@ -61,7 +62,7 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 	 */
 	String[] myLblFieldNames;
 	/*
-	 * Number of attributes in table. 
+	 * Number of attributes in table.
 	 */
 	private static int NUM_OF_COLS;
 
@@ -69,16 +70,16 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 	 * Constructor for Appointment Information Panel.
 	 */
 	public AppointmentUpdatePanel() {
-		super(Color.DARK_GRAY);
 		setLayout(new ParagraphLayout(40, 30, 10, 10, 10, 10));
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		createComponents();
 		addListeners();
+		this.setPreferredSize(new Dimension(400, 1000));
+		this.setVisible(true);
 	}
 
 	/**
-	 * Creates components from table meta data. 
-	 * Meta data returned is 1 based.
+	 * Creates components from table meta data. Meta data returned is 1 based.
 	 */
 	private void createComponents() {
 		try {
@@ -96,8 +97,7 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 					myApptTxt[i].setEditable(false);
 					myApptTxt[i].setToolTipText("cannot edit primary key");
 				}
-				myApptLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1)); 
-				myApptLbl[i].setForeground(Color.lightGray);
+				myApptLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1));
 				add(myApptLbl[i], ParagraphLayout.NEW_PARAGRAPH);
 				add(myApptTxt[i], ParagraphLayout.NEW_LINE);
 			}
@@ -106,7 +106,7 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Adds listeners to buttons.
 	 */
@@ -129,9 +129,9 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 		add(myApptDeleteBtn);
 
 	}
-	
+
 	/**
-	 * Deletes a appointment from the appointment Table. 
+	 * Deletes a appointment from the appointment Table.
 	 */
 	private void deleteApptDB() {
 		if (!myApptTxt[0].getText().equals("")) {
@@ -147,15 +147,16 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 	 * 
 	 */
 	public void updateApptDB() {
-		System.out.println(myTxtFieldNames[2]);
 		String updateString = "update dbo.appointment SET " + myTxtFieldNames[2] + "='" + myApptTxt[2].getText() + "', "
 				+ myTxtFieldNames[3] + "='" + myApptTxt[3].getText() + "', " + myTxtFieldNames[4] + "='"
-				+ myApptTxt[4].getText() + "' where patientID ='" + myApptTxt[0].getText() + "' and therapistID='" + myApptTxt[1].getText() + "'";
+				+ myApptTxt[4].getText() + "' where patientID ='" + myApptTxt[0].getText() + "' and therapistID='"
+				+ myApptTxt[1].getText() + "'";
 		executeQuery(updateString);
 	}
 
 	/**
-	 * Executes a update query statement to the appointment Table. 
+	 * Executes a update query statement to the appointment Table.
+	 * 
 	 * @param queryString
 	 */
 	private void executeQuery(String queryString) {
@@ -175,9 +176,9 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 			t.setText(null);
 		}
 	}
-	
+
 	/**
-	 * Receives a table selection event to set the text fields in the update 
+	 * Receives a table selection event to set the text fields in the update
 	 * panel.
 	 */
 	@Override
@@ -195,8 +196,8 @@ public class AppointmentUpdatePanel extends AbstractUpdatePanel implements Prope
 			myApptTxt[i].setText(rowData[i]);
 		}
 	}
-	
-	//to do
+
+	// to do
 	/*
 	 * String insertString = "insert into dbo.appointment values('" +
 	 * myappointmentTxt[1].getText() + "', '" + myappointmentTxt[2].getText() +

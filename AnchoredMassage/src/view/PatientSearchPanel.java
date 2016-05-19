@@ -1,12 +1,14 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
@@ -18,7 +20,7 @@ import com.jhlabs.awt.ParagraphLayout;
  * 
  *         Panel that will allow users to query and filter the patient table.
  */
-public class PatientSearchPanel extends AbstractSearchPanel {
+public class PatientSearchPanel extends JPanel {
 
 	/**
 	 * Default serial id.
@@ -50,10 +52,10 @@ public class PatientSearchPanel extends AbstractSearchPanel {
 	 * Constructs the Patient search panel.
 	 */
 	public PatientSearchPanel() {
-		super(Color.darkGray);
 		CURRENT_QUERY = "SELECT * FROM PATIENT";
 		addComponents();
-
+		this.setPreferredSize(new Dimension(1000, 75));
+		this.setVisible(true);
 	}
 
 	/**

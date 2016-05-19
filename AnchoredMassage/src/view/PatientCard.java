@@ -19,26 +19,26 @@ public class PatientCard extends JPanel {
 	/**
 	 * Patient Info Panel.
 	 */
-	private AppointmentUpdatePanel myPatientUpdatePanel;
+	private PatientUpdatePanel myPatientUpdatePanel;
 
 	/**
 	 * Patient Search Panel.
 	 */
-	private AppointmentSearchPanel myPatientSearchPanel;
+	private PatientSearchPanel myPatientSearchPanel;
 
 	/**
 	 * Patient Table Panel.
 	 */
-	private AppointmentTablePanel myPatientTablePanel;
+	private PatientTablePanel myPatientTablePanel;
 	
 	/**
 	 * Constructs the patient card to hold all sub panels. 
 	 */
 	public PatientCard() {
 		setLayout(new BorderLayout());
-		myPatientUpdatePanel = new AppointmentUpdatePanel();
-		myPatientSearchPanel = new AppointmentSearchPanel();
-		myPatientTablePanel = new AppointmentTablePanel();
+		myPatientUpdatePanel = new PatientUpdatePanel();
+		myPatientSearchPanel = new PatientSearchPanel();
+		myPatientTablePanel = new PatientTablePanel();
 		add(myPatientUpdatePanel, BorderLayout.EAST);
 		add(myPatientSearchPanel, BorderLayout.NORTH);
 		add(myPatientTablePanel, BorderLayout.CENTER);

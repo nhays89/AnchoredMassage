@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -13,6 +14,7 @@ import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.jhlabs.awt.ParagraphLayout;
@@ -25,7 +27,7 @@ import com.jhlabs.awt.ParagraphLayout;
  *         Panel that will display and update information relating to each tuple
  *         of the patient table.
  */
-public class TherapistUpdatePanel extends AbstractUpdatePanel implements PropertyChangeListener {
+public class TherapistUpdatePanel extends JPanel implements PropertyChangeListener {
 
 	/**
 	 * Default serial id.
@@ -69,11 +71,13 @@ public class TherapistUpdatePanel extends AbstractUpdatePanel implements Propert
 	 * Constructor for Therapist Information Panel.
 	 */
 	public TherapistUpdatePanel() {
-		super(Color.DARK_GRAY);
+		//super(Color.DARK_GRAY);
 		setLayout(new ParagraphLayout(40, 30, 10, 10, 10, 10));
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		createComponents();
 		addListeners();
+		this.setPreferredSize(new Dimension(400, 1000));
+		this.setVisible(true);
 	}
 
 	/**
@@ -97,7 +101,6 @@ public class TherapistUpdatePanel extends AbstractUpdatePanel implements Propert
 					myTherapistTxt[i].setToolTipText("cannot edit primary key");
 				}
 				myTherapistLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1)); 
-				myTherapistLbl[i].setForeground(Color.lightGray);
 				add(myTherapistLbl[i], ParagraphLayout.NEW_PARAGRAPH);
 				add(myTherapistTxt[i], ParagraphLayout.NEW_LINE);
 			}

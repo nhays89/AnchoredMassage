@@ -2,12 +2,14 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
@@ -25,7 +27,7 @@ import model.AnchoredTableModel;
  *         Panel displayed in a tabular format which allows users to interact
  *         with the search results.
  */
-public class TherapistTablePanel extends AbstractTablePanel
+public class TherapistTablePanel extends JPanel
 		implements TableModelListener, ListSelectionListener, PropertyChangeListener {
 
 	/**
@@ -52,7 +54,6 @@ public class TherapistTablePanel extends AbstractTablePanel
 	 * components.
 	 */
 	public TherapistTablePanel() {
-		super(Color.darkGray);
 		this.setLayout(new BorderLayout());
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		myTherapistTable = new JTable();
@@ -60,6 +61,8 @@ public class TherapistTablePanel extends AbstractTablePanel
 		JScrollPane myTherapistScrollPane = new JScrollPane(myTherapistTable);
 		myTherapistTable.setShowGrid(true);
 		add(myTherapistScrollPane, BorderLayout.CENTER);
+		this.setPreferredSize(new Dimension(600, 600));
+		this.setVisible(true);
 	}
 
 	private void createTableModel() {

@@ -2,18 +2,22 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
@@ -25,7 +29,7 @@ import model.AnchoredTableModel;
  * 
  *         Panel displayed in a tabular format.
  */
-public class PatientTablePanel extends AbstractTablePanel
+public class PatientTablePanel extends JPanel
 		implements TableModelListener, ListSelectionListener, PropertyChangeListener {
 
 	/**
@@ -36,7 +40,7 @@ public class PatientTablePanel extends AbstractTablePanel
 	/**
 	 * The patient table.
 	 */
-	JTable myPatientTable;
+	 JTable myPatientTable;
 
 	/**
 	 * Patient Table Model.
@@ -56,7 +60,6 @@ public class PatientTablePanel extends AbstractTablePanel
 	 * correspond to data in the table model.
 	 */
 	public PatientTablePanel() {
-		super(Color.darkGray);
 		this.setLayout(new BorderLayout());
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		myPatientTable = new JTable();
@@ -64,6 +67,8 @@ public class PatientTablePanel extends AbstractTablePanel
 		JScrollPane myPatientScrollPane = new JScrollPane(myPatientTable);
 		myPatientTable.setShowGrid(true);
 		add(myPatientScrollPane, BorderLayout.CENTER);
+		this.setPreferredSize(new Dimension(600, 600));
+		this.setVisible(true);
 
 	}
 
@@ -75,7 +80,7 @@ public class PatientTablePanel extends AbstractTablePanel
 		try {
 			Statement stmt;
 			stmt = myDBConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			ResultSet rs = stmt.executeQuery(AppointmentSearchPanel.CURRENT_QUERY);
+			ResultSet rs = stmt.executeQuery(PatientSearchPanel.CURRENT_QUERY);
 			myPatientTableModel = new AnchoredTableModel(rs);
 			myPatientTableModel.addTableModelListener(this);
 			myPatientTable.setModel(myPatientTableModel);
