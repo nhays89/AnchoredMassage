@@ -3,11 +3,6 @@ package model;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-
-import javax.sql.RowSet;
-import javax.sql.RowSetEvent;
-import javax.sql.RowSetListener;
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
@@ -85,13 +80,11 @@ public class AnchoredTableModel implements TableModel {
 	@Override
 	public void removeTableModelListener(TableModelListener arg0) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setValueAt(Object arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -2,15 +2,14 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -21,18 +20,24 @@ public class MSGWindow extends WindowAdapter{
 	JButton btnYes, btnNo;
 	boolean answer;
 	Object mon;
-
+	JTextArea textArea;
 	public MSGWindow(String message) {
 		myFrame = new JFrame();
 		myFrame.getContentPane().setBackground(Color.BLACK);
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
-		mainPanel.setBackground(Color.black);
+		mainPanel.setMaximumSize(new Dimension(300,300));
 		myFrame.add(mainPanel);
-		mainPanel.add(new JLabel(message, SwingConstants.CENTER), BorderLayout.CENTER);
-		myFrame.setSize(300, 100);
+		textArea = new JTextArea();
+		textArea.setWrapStyleWord(true);
+		textArea.setLineWrap(true);
+		textArea.setEditable(false);
+		textArea.append(message);
+		textArea.setPreferredSize(new Dimension(300,150));
+		mainPanel.add(textArea, BorderLayout.CENTER);
 		myFrame.setVisible(true);
 		myFrame.setLocationRelativeTo(null);
+		myFrame.pack();
 	}
 	
 	@Override

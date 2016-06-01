@@ -1,16 +1,18 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -41,7 +43,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	/**
 	 * TextField Size
 	 */
-	private static int TEXT_FIELD_SIZE = 17;
+	private static int TEXT_FIELD_SIZE = 15;
 	/**
 	 * Database connection.
 	 */
@@ -49,11 +51,11 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	/**
 	 * JTextField objects.
 	 */
-	JTextField myPatientTxt[];
+	JTextField[] myPatientTxt, myInsuranceTxt, myAuthorizationTxt;
 	/**
 	 * JLabel objects.
 	 */
-	JLabel[] myPatientLbl;
+	JLabel[] myPatientLbl, myInsuranceLbl, myAuthorization;
 	/**
 	 * Field names.
 	 */
@@ -66,24 +68,99 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	 * Number of attributes in table. 
 	 */
 	private static int NUM_OF_COLS;
-
+	/**
+	 * current Patient ID.
+	 */
+	private static String CURRENT_PATIENT_ID;
+	/**
+	 * Prepared Statement
+	 */
+	private PreparedStatement patientPS, insurancePS, authorizationPS;
 	/**
 	 * Constructor for Patient Information Panel.
 	 */
 	public PatientUpdatePanel() {
 		setLayout(new ParagraphLayout(00, 30, 10, 10, 10, 10));
 		myDBConn = AnchoredGUI.DB_CONNECTION;
-		createComponents();
+		setPreparedStatement();
+		createPatient();
+		createPatientInsurance();
 		addListeners();
 		this.setPreferredSize(new Dimension(400, 1000));
 		this.setVisible(true);
 	}
+	/** 
+	 * Sets the prepared statement format 
+	 */
+	private void setPreparedStatement() {
+		String patientInsertString = "insert into PATIENT values(?,?,?,?,?,?,?,?,?)";
+		String patientInsuranceString = "insert into INSURANCE values(?,?,?,?,?,?)";
+		patientPS = null;
+		try {
+			patientPS = AnchoredGUI.DB_CONNECTION.prepareStatement(patientInsertString, Statement.RETURN_GENERATED_KEYS);
+			insurancePS = AnchoredGUI.DB_CONNECTION.prepareStatement(patientInsuranceString);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
+	/**
+	 * Inserts a tuple into the appointment Table.
+	 */
+	private void insertPatientDB(String[] dataFields) {
+		// to do
+		// if the fields are not empty run this
+		
+		try {
+			patientPS.setString(1, dataFields[1]);
+			patientPS.setString(2, dataFields[2]);
+			patientPS.setString(3, dataFields[3]);
+			patientPS.setString(4, dataFields[4]);
+			patientPS.setString(5, dataFields[5]);
+			patientPS.setInt(6, Integer.parseInt(dataFields[6]));
+			patientPS.setDate(7, Date.valueOf(dataFields[7]));
+			patientPS.setString(8, dataFields[8]);
+			patientPS.setString(9, dataFields[9]);
+			patientPS.executeUpdate();
+		} catch (Exception e) {
+			new MSGWindow(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		for (JTextField t : this.myPatientTxt) {
+			t.setText(null);
+		}
+		firePropertyChange("createResultSet", null, null);
+	}
+	/**
+	 * Inserts a tuple into the appointment Table.
+	 */
+	private void insertInsuranceDB(String[] dataFields) {
+		// to do
+		// if the fields are not empty run this
+		
+		try {
+			insurancePS.setInt(1, Integer.parseInt(dataFields[0]));
+			insurancePS.setString(2, dataFields[1]);
+			insurancePS.setString(3, dataFields[2]);
+			insurancePS.setString(4, dataFields[3]);
+			insurancePS.setInt(5, Integer.parseInt(dataFields[4]));
+			insurancePS.setString(6, dataFields[5]);
+	
+			insurancePS.executeUpdate();
+		} catch (Exception e) {
+			new MSGWindow(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		for (JTextField t : this.myPatientTxt) {
+			t.setText(null);
+		}
+		firePropertyChange("createResultSet", null, null);
+	}
 	/**
 	 * Creates components from table meta data. 
 	 * Meta data returned is 1 based.
 	 */
-	private void createComponents() {
+	private void createPatient() {
 		try {
 			Statement stmt = myDBConn.createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM PATIENT");
@@ -91,10 +168,8 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			NUM_OF_COLS = rsmd.getColumnCount();
 			myPatientLbl = new JLabel[NUM_OF_COLS];
 			myPatientTxt = new JTextField[NUM_OF_COLS];
-			myTxtFieldNames = new String[NUM_OF_COLS];
 			for (int i = 0; i < rsmd.getColumnCount(); i++) {
 				myPatientTxt[i] = new JTextField(TEXT_FIELD_SIZE);
-				myTxtFieldNames[i] = rsmd.getColumnLabel(i + 1);
 				if (i == 0) {
 					myPatientTxt[i].setEditable(false);
 					myPatientTxt[i].setToolTipText("cannot edit primary key");
@@ -105,10 +180,33 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			}
 
 		} catch (SQLException e) {
+			new MSGWindow(e.getLocalizedMessage());
+		}
+	}
+	/**
+	 * Creates components from table meta data. 
+	 * Meta data returned is 1 based.
+	 */
+	private void createPatientInsurance() {
+		try {
+			
+			Statement stmt = myDBConn.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM INSURANCE");
+			ResultSetMetaData rsmd = rs.getMetaData();
+			NUM_OF_COLS = rsmd.getColumnCount();
+			myInsuranceLbl = new JLabel[NUM_OF_COLS];
+			myInsuranceTxt = new JTextField[NUM_OF_COLS];
+			for (int i = 1; i < rsmd.getColumnCount(); i++) {
+				myInsuranceTxt[i] = new JTextField(TEXT_FIELD_SIZE);
+				myInsuranceLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1)); 
+				add(myInsuranceLbl[i], ParagraphLayout.NEW_PARAGRAPH);
+				add(myInsuranceTxt[i], ParagraphLayout.NEW_LINE);
+			}
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
 	/**
 	 * Adds listeners to buttons.
 	 */
@@ -117,7 +215,8 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		myPatientUpdateBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				updatePatientDB();
+				insertPatientDB(getPatientFields());
+				insertInsuranceDB(getInsuranceFields());
 			}
 		});
 		myPatientDeleteBtn = new JButton("Delete");
@@ -137,26 +236,10 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	 */
 	private void deletePatientDB() {
 		if (!myPatientTxt[0].getText().equals("")) {
-			String deleteString = "DELETE FROM PATIENT WHERE patientID ='" + myPatientTxt[0].getText() + "'";
+			String deleteString = "DELETE FROM PATIENT WHERE [Patient ID] ='" + myPatientTxt[0].getText() + "'";
 			executeQuery(deleteString);
 			firePropertyChange("createResultSet", null, myPatientTxt[0]);
 		}
-	}
-
-	/**
-	 * generates a query to update database. Then fire a property change event
-	 * to refresh the patient table.
-	 * 
-	 */
-	public void updatePatientDB() {
-
-		String updateString = "update dbo.PATIENT SET " + myTxtFieldNames[1] + "='" + myPatientTxt[1].getText() + "', "
-				+ myTxtFieldNames[2] + "='" + myPatientTxt[2].getText() + "', " + myTxtFieldNames[3] + "='"
-				+ myPatientTxt[3].getText() + "', " + myTxtFieldNames[4] + "='" + myPatientTxt[4].getText() + "', "
-				+ myTxtFieldNames[5] + "='" + myPatientTxt[5].getText() + "', " + myTxtFieldNames[6] + "='"
-				+ myPatientTxt[6].getText() + "', " + myTxtFieldNames[7] + "='" + myPatientTxt[7].getText()
-				+ "' where patientID ='" + myPatientTxt[0].getText() + "'";
-		executeQuery(updateString);
 	}
 
 	/**
@@ -169,7 +252,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			stmt = myDBConn.createStatement();
 			stmt.executeUpdate(queryString);
 		} catch (Exception e) {
-			new MSGWindow("error");
+			new MSGWindow(e.getLocalizedMessage());
 			e.printStackTrace();
 		}
 		// if successful?
@@ -188,26 +271,42 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("tableSelectionChanged")) {
-			setTextFields((String[]) evt.getNewValue());
+			setPatientFields((String[]) evt.getNewValue());
 		}
+	}
+	/**
+	 * Gets text in JTextFields.
+	 * @return array of Strings to be inserted into the db.
+	 */
+	private String[] getPatientFields() {
+		String[] fields = new String[myPatientTxt.length];
+		for (int i = 0; i < myPatientTxt.length; i++) {
+			fields[i] = myPatientTxt[i].getText();
+		}
+		return fields;
+	}
+	/**
+	 * Gets text in JTextFields.
+	 * @return array of Strings to be inserted into the db.
+	 */
+	private String[] getInsuranceFields() {
+		String[] fields = new String[myInsuranceTxt.length];
+		for (int i = 0; i < myInsuranceTxt.length; i++) {
+			fields[i] = myInsuranceTxt[i].getText();
+		}
+		return fields;
 	}
 
 	/**
 	 * Set Patient Fields.
 	 */
-	private void setTextFields(String[] rowData) {
+	private void setPatientFields(String[] rowData) {
 		for (int i = 0; i < myPatientTxt.length; i++) {
+			if( i == 0) {
+				CURRENT_PATIENT_ID = rowData[i];
+			}
 			myPatientTxt[i].setText(rowData[i]);
 		}
 	}
 	
-	//to do
-	/*
-	 * String insertString = "insert into dbo.PATIENT values('" +
-	 * myPatientTxt[1].getText() + "', '" + myPatientTxt[2].getText() +
-	 * "', '" + myPatientTxt[3].getText() + "', '" +
-	 * myPatientTxt[4].getText() + "', '" + myPatientTxt[5].getText() +
-	 * "', '" + myPatientTxt[6].getText() + "', '" +
-	 * myPatientTxt[7].getText() + "')";
-	 */
 }

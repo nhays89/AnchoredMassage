@@ -2,16 +2,16 @@ package view;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.jhlabs.awt.ParagraphLayout;
@@ -47,15 +47,15 @@ public class AnchoredGUI extends JFrame {
 	/**
 	 * Patient card identifier.
 	 */
-	static final String PATIENTCARD = "patientCard";
+	static final String PATIENTCARD = "PATIENT CARD";
 	/**
 	 * Therapist card identifier.
 	 */
-	static final String THERAPISTCARD = "therpaistCard";
+	static final String THERAPISTCARD = "THERAPIST CARD";
 	/**
 	 * Appointment card identifier.
 	 */
-	static final String APPOINTMENTCARD = "appointmentCard";
+	static final String APPOINTMENTCARD = "APPOINTMENT CARD";
 	/**
 	 * default serial id.
 	 */
@@ -63,17 +63,17 @@ public class AnchoredGUI extends JFrame {
 	/**
 	 * database connection.
 	 */
-	protected static SQLServerDataSource DATA_SOURCE;
-	/**
-	 * connection to database.
-	 */
 	protected static Connection DB_CONNECTION;
-	
+	/**
+	 * database source.
+	 */
+	protected static SQLServerDataSource DATA_SOURCE;
 	/**
 	 * Creates the main GUI of the application.
 	 */
-	public AnchoredGUI() {
-		setupdb();
+	public AnchoredGUI(SQLServerDataSource theDB, Connection theConn) {
+		DATA_SOURCE = theDB;
+		DB_CONNECTION = theConn;
 		createCards();
 		myCards = new JPanel(new CardLayout());
 		myCards.add(myPatientCard, PATIENTCARD);
@@ -82,24 +82,6 @@ public class AnchoredGUI extends JFrame {
 		this.getContentPane().add(myCards);
 		createNav();
 		initGUI();
-	}
-	
-	/**
-	 * Setup database and server connections. 
-	 */
-	private void setupdb() {
-		DATA_SOURCE = new SQLServerDataSource();
-		DATA_SOURCE.setUser("nhays89");
-		DATA_SOURCE.setPassword("********"); //credentials go here
-		DATA_SOURCE.setServerName("VADER\\SQLEXPRESS");
-		DATA_SOURCE.setInstanceName("VADER\\SQLEXPRESS");
-		DATA_SOURCE.setPortNumber(3119);
-		DATA_SOURCE.setDatabaseName("AnchoredMassage");
-		try {
-			DB_CONNECTION = DATA_SOURCE.getConnection();
-		} catch (SQLServerException e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -126,6 +108,7 @@ public class AnchoredGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout myCardLayout = (CardLayout) myCards.getLayout();
 				myCardLayout.show(myCards, PATIENTCARD);
+				setTitle(PATIENTCARD);
 			}
 		});
 
@@ -136,6 +119,7 @@ public class AnchoredGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout myCardLayout = (CardLayout) myCards.getLayout();
 				myCardLayout.show(myCards, THERAPISTCARD);
+				setTitle(THERAPISTCARD);
 			}
 		});
 
@@ -146,13 +130,13 @@ public class AnchoredGUI extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				CardLayout myCardLayout = (CardLayout) myCards.getLayout();
 				myCardLayout.show(myCards, APPOINTMENTCARD);
+				setTitle(APPOINTMENTCARD);
 			}
 		});
 
 		navPanel.add(myPatientBtn, ParagraphLayout.NEW_PARAGRAPH);
 		navPanel.add(myTherapistBtn, ParagraphLayout.NEW_PARAGRAPH);
 		navPanel.add(myAppointmentBtn, ParagraphLayout.NEW_PARAGRAPH);
-
 	}
 
 	/**
@@ -164,6 +148,7 @@ public class AnchoredGUI extends JFrame {
 		double height = screenSize.getHeight();
 		this.setSize(new Dimension(( (int) width), (int) height));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setTitle("Anchored Massage");
 		setVisible(true);
 	}
 }

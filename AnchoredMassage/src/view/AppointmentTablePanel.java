@@ -1,7 +1,6 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -84,7 +83,7 @@ public class AppointmentTablePanel extends JPanel
 			myApptTable.setModel(myApptTableModel);
 			myApptTable.getSelectionModel().addListSelectionListener(this);
 		} catch (Exception e) {
-			new MSGWindow("error");
+			new MSGWindow(e.getLocalizedMessage());
 			e.printStackTrace();
 		}
 	}

@@ -1,6 +1,11 @@
 package view;
 
 import java.awt.BorderLayout;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.JPanel;
 
 /**
@@ -25,17 +30,23 @@ public class PatientCard extends JPanel {
 	 * Patient Search Panel.
 	 */
 	private PatientSearchPanel myPatientSearchPanel;
+	/**
+	 * Patient, Insurance, and InsuranceAuthorization Meta Data. 
+	 */
+	protected static ResultSetMetaData PATIENT_META_DATA;
+	
 
 	/**
 	 * Patient Table Panel.
 	 */
-	private PatientTablePanel myPatientTablePanel;
+	protected static PatientTablePanel myPatientTablePanel;
 	
 	/**
 	 * Constructs the patient card to hold all sub panels. 
 	 */
 	public PatientCard() {
 		setLayout(new BorderLayout());
+		setPatientMetaData();
 		myPatientUpdatePanel = new PatientUpdatePanel();
 		myPatientSearchPanel = new PatientSearchPanel();
 		myPatientTablePanel = new PatientTablePanel();
@@ -46,4 +57,18 @@ public class PatientCard extends JPanel {
 		myPatientSearchPanel.addPropertyChangeListener(myPatientTablePanel);
 		myPatientUpdatePanel.addPropertyChangeListener(myPatientTablePanel);
 	}
+
+	private void setPatientMetaData() {
+		try {
+			Statement patientStmt = AnchoredGUI.DB_CONNECTION.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			//Statement insuranceStmt = AnchoredGUI.DB_CONNECTION.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			//Statement insuranceAuthStmt = AnchoredGUI.DB_CONNECTION.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			ResultSet patientRS = patientStmt.executeQuery("SELECT * FROM PATIENT");
+			PATIENT_META_DATA = patientRS.getMetaData();
+		} catch (SQLException e) {
+			new MSGWindow(e.getMessage());
+		}
+	}
+	
+	
 }

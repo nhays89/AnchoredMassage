@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +34,6 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 	 * Default serial id.
 	 */
 	private static final long serialVersionUID = 9106446617813863696L;
-
 	/**
 	 * Update and delete buttons.
 	 */
@@ -57,27 +55,19 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 	 */
 	JLabel[] myApptLbl;
 	/**
-	 * Field names.
+	 * Containers for field data.
 	 */
-	String[] myTxtFieldNames;
+	String[] myTxtFieldNames, myLblFieldNames, currentSelection;
 	/**
-	 * Display Names.
+	 * pre-compiles SQL query for update, insert, and delete.
 	 */
-	String[] myLblFieldNames;
-	/**
-	 * current selected value.
-	 */
-	private String[] currentSelection;
-	/**
-	 * pre-compiles sql query for update, insert, and delete.
-	 */
-	private PreparedStatement prepDeleteAppt, prepUpdateAppt, prepInsertAppt;
-
+	private PreparedStatement prepDeleteAppt, prepInsertAppt;
 	/*
 	 * Number of attributes in table.
 	 */
 	private static int NUM_OF_COLS;
 
+	
 	/**
 	 * Constructor for Appointment Information Panel.
 	 */
@@ -99,12 +89,9 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 			ResultSet rs = stmt.executeQuery("SELECT * FROM APPOINTMENT");
 			ResultSetMetaData rsmd = rs.getMetaData();
 			String deleteString = "delete from APPOINTMENT "
-					+ "WHERE patientID = ? AND therapistID = ? AND date = ? AND startTime = ? AND endTime = ?";
-			String updateString = "update dbo.APPOINTMENT SET serviceName = ? where patientID = ? AND therapistID = ? AND date = ? AND "
-					+ "startTime = ? AND endTime = ?";
-			String insertString = "insert into dbo.APPOINTMENT values(?,?,?,?,?,?)";
+					+ "WHERE [Patient ID] = ? AND [Therapist ID] = ? AND [Date] = ? AND [Start Time] = ? AND [End Time] = ? AND [Service Name] = ? AND [Reason For Visit] = ?";
+			String insertString = "insert into dbo.APPOINTMENT values(?,?,?,?,?,?,?)";
 			prepDeleteAppt = AnchoredGUI.DB_CONNECTION.prepareStatement(deleteString);
-			prepUpdateAppt = AnchoredGUI.DB_CONNECTION.prepareStatement(updateString);
 			prepInsertAppt = AnchoredGUI.DB_CONNECTION.prepareStatement(insertString);
 			NUM_OF_COLS = rsmd.getColumnCount();
 			myApptLbl = new JLabel[NUM_OF_COLS];
@@ -135,7 +122,6 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 				String[] fields = getFields();
 				insertApptDB(fields);
 			}
-
 		});
 		myApptDeleteBtn = new JButton("Delete");
 		myApptDeleteBtn.addActionListener(new ActionListener() {
@@ -150,13 +136,15 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 		add(myApptDeleteBtn);
 
 	}
-
+	
+	/**
+	 * Gets text in JTextFields.
+	 * @return array of Strings to be inserted into the db.
+	 */
 	private String[] getFields() {
 		String[] fields = new String[myApptTxt.length];
 		for (int i = 0; i < myApptTxt.length; i++) {
 			fields[i] = myApptTxt[i].getText();
-			System.out.println(fields[i]);
-			System.out.println("here");
 		}
 		return fields;
 	}
@@ -165,9 +153,6 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 	 * Inserts a tuple into the appointment Table.
 	 */
 	private void insertApptDB(String[] dataFields) {
-		// to do
-		// if the fields are not empty run this
-
 		try {
 			prepInsertAppt.setString(1, dataFields[0]);
 			prepInsertAppt.setString(2, dataFields[1]);
@@ -175,9 +160,12 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 			prepInsertAppt.setTime(4, Time.valueOf(dataFields[3]));
 			prepInsertAppt.setTime(5, Time.valueOf(dataFields[4]));
 			prepInsertAppt.setString(6, dataFields[5]);
+			prepInsertAppt.setString(7, dataFields[6]);
 			prepInsertAppt.executeUpdate();
 		} catch (SQLException e) {
+			new MSGWindow(e.getLocalizedMessage());
 			e.printStackTrace();
+			return;
 		}
 		for (JTextField t : myApptTxt) {
 			t.setText(null);
@@ -195,6 +183,9 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 			prepDeleteAppt.setDate(3, Date.valueOf(dataFields[2]));
 			prepDeleteAppt.setTime(4, Time.valueOf(dataFields[3]));
 			prepDeleteAppt.setTime(5, Time.valueOf(dataFields[4]));
+			prepDeleteAppt.setString(6, dataFields[5]);
+			prepDeleteAppt.setString(7, dataFields[6]);
+			prepDeleteAppt.executeUpdate();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -207,63 +198,6 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 				e.printStackTrace();
 			}
 			firePropertyChange("createResultSet", null, null);
-		}
-		/*
-		 * for (JTextField t : myApptTxt) { t.setText(null); }
-		 */
-
-	}
-
-	/**
-	 * generates a prepared statement query to update db. Then fire a property
-	 * change event to refresh the appointment table.
-	 * 
-	 */
-	public void updateApptDB() {
-		try {
-			/*
-			 * System.out.println(myApptTxt[5].getText() + " " +
-			 * myApptTxt[0].getText() + " " + myApptTxt[1].getText() + " " +
-			 * myApptTxt[2].getText() + " " + myApptTxt[3].getText() + "" + " "
-			 * + myApptTxt[4].getText());
-			 * 
-			 * 
-			 * System.out.println(Date.valueOf(myApptTxt[2].getText()));
-			 * prepUpdateAppt.setString(1, myApptTxt[5].getText());
-			 * prepUpdateAppt.setString(2, myApptTxt[0].getText());
-			 * prepUpdateAppt.setString(3, myApptTxt[1].getText());
-			 * prepUpdateAppt.setDate(4, Date.valueOf(myApptTxt[2].getText()));
-			 * prepUpdateAppt.setTime(5, Time.valueOf(myApptTxt[3].getText()));
-			 * prepUpdateAppt.setTime(6, Time.valueOf(myApptTxt[4].getText()));
-			 */
-
-			prepUpdateAppt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		firePropertyChange("createResultSet", null, null);
-		for (JTextField t : myApptTxt) {
-			t.setText(null);
-		}
-	}
-
-	/**
-	 * Executes a update query statement to the appointment Table.
-	 * 
-	 * @param queryString
-	 */
-	private void executeQuery(String queryString) {
-		Statement stmt;
-		try {
-			stmt = myDBConn.createStatement();
-			stmt.executeUpdate(queryString);
-		} catch (Exception e) {
-			new MSGWindow("error");
-			e.printStackTrace();
-		}
-		this.firePropertyChange("createResultSet", null, null);
-		for (JTextField t : myApptTxt) {
-			t.setText(null);
 		}
 	}
 
