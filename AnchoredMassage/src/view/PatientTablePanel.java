@@ -135,7 +135,7 @@ public class PatientTablePanel extends JPanel
 	public void propertyChange(PropertyChangeEvent evt) {
 		String propName = evt.getPropertyName();
 		if (propName.equals("createResultSet")) {
-			if (AppointmentSearchPanel.CURRENT_QUERY != null) {
+			if (PatientSearchPanel.CURRENT_QUERY != null) {
 				createTableModel();
 			}
 		}

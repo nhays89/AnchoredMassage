@@ -19,7 +19,6 @@ import javax.swing.JTextField;
 
 import com.jhlabs.awt.ParagraphLayout;
 
-
 /**
  * 
  * @author Nicholas A. Hays
@@ -63,7 +62,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	 */
 	String[] myLblFieldNames;
 	/*
-	 * Number of attributes in table. 
+	 * Number of attributes in table.
 	 */
 	private static int NUM_OF_COLS;
 
@@ -71,7 +70,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	 * Constructor for Therapist Information Panel.
 	 */
 	public TherapistUpdatePanel() {
-		//super(Color.DARK_GRAY);
+		// super(Color.DARK_GRAY);
 		setLayout(new ParagraphLayout(40, 30, 10, 10, 10, 10));
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		createComponents();
@@ -81,8 +80,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	}
 
 	/**
-	 * Creates components from table meta data. 
-	 * Meta data returned is 1 based.
+	 * Creates components from table meta data. Meta data returned is 1 based.
 	 */
 	private void createComponents() {
 		try {
@@ -100,7 +98,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 					myTherapistTxt[i].setEditable(false);
 					myTherapistTxt[i].setToolTipText("cannot edit primary key");
 				}
-				myTherapistLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1)); 
+				myTherapistLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1));
 				add(myTherapistLbl[i], ParagraphLayout.NEW_PARAGRAPH);
 				add(myTherapistTxt[i], ParagraphLayout.NEW_LINE);
 			}
@@ -109,7 +107,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Adds listeners to buttons.
 	 */
@@ -132,9 +130,9 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 		add(myTherapistDeleteBtn);
 
 	}
-	
+
 	/**
-	 * Deletes a therapist from the Therapist Table. 
+	 * Deletes a therapist from the Therapist Table.
 	 */
 	private void deleteTherapistDB() {
 		if (!myTherapistTxt[0].getText().equals("")) {
@@ -151,8 +149,8 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	 */
 	public void updateTherapistDB() {
 
-		String updateString = "update dbo.THERAPIST SET " + myTxtFieldNames[1] + "='" + myTherapistTxt[1].getText() + "', "
-				+ myTxtFieldNames[2] + "='" + myTherapistTxt[2].getText() + "', " + myTxtFieldNames[3] + "='"
+		String updateString = "update dbo.THERAPIST SET " + myTxtFieldNames[1] + "='" + myTherapistTxt[1].getText()
+				+ "', " + myTxtFieldNames[2] + "='" + myTherapistTxt[2].getText() + "', " + myTxtFieldNames[3] + "='"
 				+ myTherapistTxt[3].getText() + "', " + myTxtFieldNames[4] + "='" + myTherapistTxt[4].getText() + "', "
 				+ myTxtFieldNames[5] + "='" + myTherapistTxt[5].getText() + "', " + myTxtFieldNames[6] + "='"
 				+ myTherapistTxt[6].getText() + "', " + myTxtFieldNames[7] + "='" + myTherapistTxt[7].getText()
@@ -161,7 +159,8 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	}
 
 	/**
-	 * Executes a update query statement to the THERAPIST Table. 
+	 * Executes a update query statement to the THERAPIST Table.
+	 * 
 	 * @param queryString
 	 */
 	private void executeQuery(String queryString) {
@@ -181,9 +180,9 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 			t.setText(null);
 		}
 	}
-	
+
 	/**
-	 * Receives a table selection event to set the text fields in the update 
+	 * Receives a table selection event to set the text fields in the update
 	 * panel.
 	 */
 	@Override
@@ -201,14 +200,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 			myTherapistTxt[i].setText(rowData[i]);
 		}
 	}
-	
-	//to do
-	/*
-	 * String insertString = "insert into dbo.THERAPIST values('" +
-	 * myTherapistTxt[1].getText() + "', '" + myTherapistTxt[2].getText() +
-	 * "', '" + myTherapistTxt[3].getText() + "', '" +
-	 * myTherapistTxt[4].getText() + "', '" + myTherapistTxt[5].getText() +
-	 * "', '" + myTherapistTxt[6].getText() + "', '" +
-	 * myTherapistTxt[7].getText() + "')";
-	 */
+
+
+
 }

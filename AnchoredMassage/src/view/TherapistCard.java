@@ -3,6 +3,11 @@ package view;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.JPanel;
 
@@ -29,7 +34,14 @@ public class TherapistCard extends JPanel {
 	 * Default serial id.
 	 */
 	private static final long serialVersionUID = 2398946988371590567L;
-
+	/**
+	 * meta data.
+	 */
+	protected static PreparedStatement myTherapistInsertPS;
+	/**
+	 * therapist meta data
+	 */
+	protected static ResultSetMetaData THERAPIST_META_DATA;
 	/**
 	 * Constructs the Therapist card which will act as a container for its sub
 	 * components.
@@ -45,6 +57,17 @@ public class TherapistCard extends JPanel {
 		myTherapistTablePanel.addPropertyChangeListener(myTherapistUpdatePanel);
 		myTherapistUpdatePanel.addPropertyChangeListener(myTherapistTablePanel);
 		myTherapistSearchPanel.addPropertyChangeListener(myTherapistTablePanel);
-	
+		
+		Statement therapistStmt;
+		try {
+			myTherapistInsertPS = AnchoredGUI.DB_CONNECTION.prepareStatement("insert into INSURANCE values(?,?,?,?,?,?,?,?,?,?)");
+			therapistStmt = AnchoredGUI.DB_CONNECTION.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			therapistStmt.execute("Select * from THERAPIST");
+			THERAPIST_META_DATA = therapistStmt.getResultSet().getMetaData();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

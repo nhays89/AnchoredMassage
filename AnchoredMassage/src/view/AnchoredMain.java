@@ -86,9 +86,9 @@ public class AnchoredMain {
 		userNameTxt.setColumns(15);
 		JPasswordField passwordTxt = new JPasswordField("71907190");
 		passwordTxt.setColumns(15);
-		JFormattedTextField serverNameTxt = new JFormattedTextField("VADER\\SQLEXPRESS");
+		JFormattedTextField serverNameTxt = new JFormattedTextField("VADER");
 		serverNameTxt.setColumns(15);
-		JFormattedTextField instanceNameTxt = new JFormattedTextField("VADER\\SQLEXPRESS");
+		JFormattedTextField instanceNameTxt = new JFormattedTextField("SQLEXPRESS");
 		instanceNameTxt.setColumns(15);
 		JFormattedTextField portNumberTxt = new JFormattedTextField("3119");
 		portNumberTxt.setColumns(15);
