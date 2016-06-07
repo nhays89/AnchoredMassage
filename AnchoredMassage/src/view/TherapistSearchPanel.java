@@ -4,18 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.util.ArrayList;
-
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,10 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
-
 import com.jhlabs.awt.ParagraphLayout;
-
-import view.AppointmentSearchPanel.CreateEntity;
 
 /**
  * 
@@ -52,10 +40,13 @@ public class TherapistSearchPanel extends JPanel {
 	 * therapist text fields.
 	 */
 	private JTextField txtTherapistID, txtTherapistFName, txtTherapistLName;
-	private int NUM_OF_ATTRIBUTES;
-	private JLabel[] myLabels;
+	/**
+	 * JButton to launch create dialog.
+	 */
 	private JButton myTherapistCreateBtn;
-
+	/**
+	 * JButton to submit therapist data to database. 
+	 */
 	private CreateEntity myTherapistEntity;
 	/**
 	 * current query string.
@@ -72,6 +63,9 @@ public class TherapistSearchPanel extends JPanel {
 		this.setPreferredSize(new Dimension(1000, 75));
 		this.setVisible(true);
 	}
+	/**
+	 * Add components to therapist search panel. 
+	 */
 	private void addComponents() {
 		TitledBorder title;
 		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
@@ -92,7 +86,6 @@ public class TherapistSearchPanel extends JPanel {
 		myTherapistSearchBtn = new JButton(" Search ");
 		myTherapistCreateBtn = new JButton(" Create ");
 		myTherapistSearchBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				updateSearchResults();
@@ -101,8 +94,6 @@ public class TherapistSearchPanel extends JPanel {
 		});
 		this.add(myTherapistSearchBtn);
 		myTherapistCreateBtn.addActionListener(new ActionListener() {
-
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				myTherapistEntity = new CreateEntity(TherapistCard.THERAPIST_META_DATA, new ActionListener() {
@@ -117,7 +108,33 @@ public class TherapistSearchPanel extends JPanel {
 		});
 		this.add(myTherapistCreateBtn);
 	}
-	
+	/**
+	 * Builds SQL expression from the search fields.
+	 */
+	private void updateSearchResults() {
+		StringBuilder searchExp = new StringBuilder("Select * from THERAPIST ");
+		if(!txtTherapistID.getText().isEmpty()) searchExp.append("where [Patient ID] = '" + txtTherapistID.getText() + "'");
+		if(!txtTherapistFName.getText().isEmpty()) {
+			if(!txtTherapistID.getText().isEmpty()) {
+				searchExp.append(" AND [First Name] = '" + txtTherapistFName.getText()  + "'");
+			} else {
+				searchExp.append("where [First Name] LIKE '%" + txtTherapistFName.getText() + "%'");
+			}
+		}
+		if(!txtTherapistLName.getText().isEmpty()) {
+			if(!txtTherapistID.getText().isEmpty() || !(txtTherapistFName.getText().isEmpty())) {
+				searchExp.append(" AND [Last Name] = '" + txtTherapistFName.getText()  + "'");
+			} else {
+				searchExp.append("where [Last Name] LIKE '%" + txtTherapistLName.getText() + "%'");
+			}
+		}
+		CURRENT_QUERY = searchExp.toString(); 
+		this.firePropertyChange("createResultSet", null, null);
+	}
+	/**
+	 * Inserts a therapist tuple using prepared statement. 
+	 * @param dataFields the data to add to the therapist tuple. 
+	 */
 	private void insertTherapistTuple(String[] dataFields) {
 		try {
 			TherapistCard.myTherapistInsertPS.setString(1, dataFields[1]);
@@ -138,15 +155,15 @@ public class TherapistSearchPanel extends JPanel {
 		this.firePropertyChange("createResultSet", null, null);
 
 	}
-	/**
-	 * Builds sql expression from the search fields.
-	 */
-	private void updateSearchResults() {
-		CURRENT_QUERY = "SELECT * FROM THERAPIST"; // to do
-		this.firePropertyChange("createResultSet", null, null);
-	}
-	public static class CreateEntity extends JFrame {
 
+	
+	
+	/**
+	 * Provides main dialog and components for therapist. 
+	 * 
+	 * @author Nicholas A. Hays
+	 */
+	public static class CreateEntity extends JFrame {
 		/**
 		 * serial id.
 		 */
@@ -185,26 +202,28 @@ public class TherapistSearchPanel extends JPanel {
 		private ActionListener myActionListener;
 
 		/**
-		 * 
+		 * Creates the therapist entity. 
 		 * @param theData
 		 *            the result set meta data
 		 */
 		public CreateEntity(ResultSetMetaData theData, ActionListener theListener) {
 			myMetaData = theData;
+			this.setLocationRelativeTo(null);
 			myActionListener = theListener;
 			myDisplay = new JPanel(new ParagraphLayout());
-			create();
+			createComponents();
 		}
-
-		private void create() {
-
+		
+		/**
+		 * Creates the components to dispaly on the dialog. 
+		 */
+		private void createComponents() {
 			try {
 				NUM_OF_ATTRIBUTES = myMetaData.getColumnCount();
 				myLabels = new JLabel[NUM_OF_ATTRIBUTES];
 				myTextFields = new JTextField[NUM_OF_ATTRIBUTES];
 				myAttribute = new String[NUM_OF_ATTRIBUTES];
 				for (int i = 0; i < myMetaData.getColumnCount(); i++) {
-					
 					myTextFields[i] = new JTextField(TEXT_FIELD_SIZE);
 					myAttribute[i] = myMetaData.getColumnLabel(i + 1);
 					myLabels[i] = new JLabel(myMetaData.getColumnLabel(i + 1));
@@ -212,7 +231,6 @@ public class TherapistSearchPanel extends JPanel {
 						myDisplay.add(myLabels[i], ParagraphLayout.NEW_PARAGRAPH);
 						myDisplay.add(myTextFields[i], ParagraphLayout.NEW_LINE);
 					}
-					
 				}
 
 			} catch (SQLException e) {
@@ -226,7 +244,11 @@ public class TherapistSearchPanel extends JPanel {
 			this.setVisible(true);
 
 		}
-
+		
+		/**
+		 * Retreives text fields. 
+		 * @return the text fields data. 
+		 */
 		protected String[] getTextFields() {
 			String[] textFields = new String[NUM_OF_ATTRIBUTES];
 			for (int i = 1; i < textFields.length; i++) {
@@ -234,7 +256,10 @@ public class TherapistSearchPanel extends JPanel {
 			}
 			return textFields;
 		}
-
+		
+		/**
+		 * Clears text fields. 
+		 */
 		protected void clearFields() {
 			for (JTextField f : myTextFields) {
 				f.setText(null);

@@ -7,7 +7,6 @@ import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -90,7 +89,6 @@ public class AppointmentTablePanel extends JPanel
 
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		//System.out.println("in table changed");
 		// to do
 	}
 

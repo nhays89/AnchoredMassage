@@ -11,11 +11,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.Date;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -125,7 +123,6 @@ public class PatientSearchPanel extends JPanel {
 	 * @param queryString
 	 */
 	private void updateTableModel() {
-		System.out.println("firing");
 		firePropertyChange("createResultSet", null, null);
 	}
 
@@ -133,12 +130,27 @@ public class PatientSearchPanel extends JPanel {
 	 * Builds SQL expression from the search fields.
 	 */
 	private void updateSearchResults() {
-		CURRENT_QUERY = "SELECT * FROM PATIENT_VIEW"; // to do
+		StringBuilder searchExp = new StringBuilder("Select * from PATIENT ");
+		if(!txtPatientID.getText().isEmpty()) searchExp.append("where [Patient ID] = '" + txtPatientID.getText() + "'");
+		if(!txtPatientFName.getText().isEmpty()) {
+			if(!txtPatientID.getText().isEmpty()) {
+				searchExp.append(" AND [First Name] = '" + txtPatientFName.getText()  + "'");
+			} else {
+				searchExp.append("where [First Name] LIKE '%" + txtPatientFName.getText() + "%'");
+			}
+		}
+		if(!txtPatientLName.getText().isEmpty()) {
+			if(!txtPatientID.getText().isEmpty() || !(txtPatientFName.getText().isEmpty())) {
+				searchExp.append(" AND [Last Name] = '" + txtPatientFName.getText()  + "'");
+			} else {
+				searchExp.append("where [Last Name] LIKE '%" + txtPatientLName.getText() + "%'");
+			}
+		}
+		CURRENT_QUERY = searchExp.toString(); 
 		this.firePropertyChange("createResultSet", null, null);
 	}
 
 	public class CreateEntity extends JFrame {
-
 		/**
 		 * serial id.
 		 */
@@ -167,6 +179,10 @@ public class PatientSearchPanel extends JPanel {
 		 * lists
 		 */
 		private ArrayList<String> patientAttributes, insuranceAttributes, authAttributes;
+		/**
+		 * Check boxes to add additional patient information
+		 */
+		private JCheckBox myInsuranceBox, myAuthorizationBox;
 
 		/**
 		 * 
@@ -179,7 +195,9 @@ public class PatientSearchPanel extends JPanel {
 			determineGroup();
 			createComponents();
 		}
-
+		/**
+		 * Determines the attributes table.
+		 */
 		private void determineGroup() {
 			patientAttributes = new ArrayList<String>();
 			insuranceAttributes = new ArrayList<String>();
@@ -205,11 +223,12 @@ public class PatientSearchPanel extends JPanel {
 				}
 			}
 		}
-
+		
+		/**
+		 * Creates components for JFrame. 
+		 */
 		private void createComponents() {
-
 			GridBagConstraints gbc = new GridBagConstraints();
-
 			gbc.insets = new Insets(10, 10, 10, 10);
 			gbc.gridx = 0;
 			gbc.gridy = 0;
@@ -219,114 +238,171 @@ public class PatientSearchPanel extends JPanel {
 			myInsuranceTxt = new ArrayList<JTextField>(10);
 			myAuthorizationTxt = new ArrayList<JTextField>(10);
 			myDisplayPanel.add(createPanel(patientAttributes, " Patient ", myPatientTxt), gbc);
-
 			JPanel insurancePanel = createPanel(insuranceAttributes, " Insurance ", myInsuranceTxt);
 			JPanel authPanel = createPanel(authAttributes, " Authorization ", myAuthorizationTxt);
-
-			JCheckBox authCheckBox = new JCheckBox();
-			authCheckBox.setEnabled(false);
-			authCheckBox.setText("Add Authorization");
-			toggleComponents(authCheckBox, authPanel);
-			authCheckBox.addItemListener(new ItemListener() {
+			myAuthorizationBox = new JCheckBox();
+			myAuthorizationBox.setEnabled(false);
+			myAuthorizationBox.setText("Add Authorization");
+			toggleComponents(myAuthorizationBox, authPanel);
+			myAuthorizationBox.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
 					toggleComponents((JCheckBox) evt.getSource(), authPanel);
 				}
 			});
-
-			JCheckBox insuranceCheckBox = new JCheckBox();
-			insuranceCheckBox.setText("Add Insurance");
-			toggleComponents(insuranceCheckBox, insurancePanel);
-			insuranceCheckBox.addItemListener(new ItemListener() {
+			myInsuranceBox = new JCheckBox();
+			myInsuranceBox.setText("Add Insurance");
+			toggleComponents(myInsuranceBox, insurancePanel);
+			myInsuranceBox.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged(ItemEvent evt) {
-					authCheckBox.setEnabled(insuranceCheckBox.isSelected());
+					myAuthorizationBox.setEnabled(myInsuranceBox.isSelected());
 					toggleComponents((JCheckBox) evt.getSource(), insurancePanel);
-					if (!insuranceCheckBox.isSelected()) {
-						authCheckBox.setSelected(false);
-						toggleComponents(authCheckBox, authPanel);
+					if (!myInsuranceBox.isSelected()) {
+						myAuthorizationBox.setSelected(false);
+						toggleComponents(myAuthorizationBox, authPanel);
 					}
 				}
 			});
-
 			gbc.gridy = 0;
 			gbc.gridheight = 1;
 			gbc.gridx++;
 			myDisplayPanel.add(insurancePanel, gbc);
 			gbc.gridy++;
-			myDisplayPanel.add(insuranceCheckBox, gbc);
+			myDisplayPanel.add(myInsuranceBox, gbc);
 			gbc.gridy++;
 			myDisplayPanel.add(authPanel, gbc);
 			gbc.gridy++;
-			myDisplayPanel.add(authCheckBox, gbc);
+			myDisplayPanel.add(myAuthorizationBox, gbc);
 			gbc.gridy++;
-			JButton sumbit = new JButton(" Submit ");
-
-			sumbit.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					long patientKey = 0;
-					try {
-						Statement patientStmt = AnchoredGUI.DB_CONNECTION
-								.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-						patientStmt.execute("Select * from PATIENT");
-						ResultSetMetaData patientRSMD = patientStmt.getResultSet().getMetaData();
-						if (!validateFields(patientRSMD, myPatientTxt)) {
-							new MSGWindow("Please make sure all Patient Fields are not empty");
-							return;
-						}
-						if (insuranceCheckBox.isSelected()) {
-							if (!validateFields(PatientCard.INSURANCE_META_DATA, myInsuranceTxt)) {
-								new MSGWindow("Please enter all Insurance Fields correctly!");
-								return;
-							}
-						}
-						if (authCheckBox.isSelected()) {
-							if (!validateFields(PatientCard.AUTH_META_DATA, myAuthorizationTxt)) {
-								new MSGWindow("Please enter all Authorization Fields");
-								return;
-							}
-						}
-						insertPatient();
-						ResultSet myPatientGenKeys = PatientCard.myPatientInsertPS.getGeneratedKeys();
-						if (myPatientGenKeys.next()) {
-							patientKey = myPatientGenKeys.getLong(1);
-						}
-						if (insuranceCheckBox.isSelected()) {
-							insertInsurance(patientKey);
-						}
-						if (authCheckBox.isSelected()) {
-							insertInsAuthorization(patientKey);
-						}
-						PatientSearchPanel.this.updateTableModel();
-					} catch (SQLException ex) {
-						new MSGWindow(ex.getLocalizedMessage());
-						ex.printStackTrace();
-					}
-				}
-
-				private boolean validateFields(ResultSetMetaData rsmd, ArrayList<JTextField> txtFields)
-						throws SQLException {
-					for (int i = 0; i < txtFields.size(); i++) {
-						if (rsmd.isNullable(i + 2) == ResultSetMetaData.columnNoNulls) {
-							if (txtFields.get(i).getText().isEmpty()) {
-								return false;
-							}
-						}
-					}
-					return true;
-				}
-			});
+			JButton submit = new JButton(" Submit ");
+			addSubmitBtn(submit);
 			gbc.gridy++;
-			myDisplayPanel.add(sumbit, gbc);
+			myDisplayPanel.add(submit, gbc);
 			this.getContentPane().add(myDisplayPanel, BorderLayout.CENTER);
 			pack();
 			this.setVisible(true);
 		}
 
+		/**
+		 * Adds a Jbutton to the panel which initiates the 
+		 * 
+		 * @param sumbitBtn the JButton. 
+		 */
+		private void addSubmitBtn(JButton sumbitBtn) {
+			sumbitBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					long patientKey = 0;
+					try {
+						if (isValid()) {
+							insertPatient();
+							ResultSet myPatientGenKeys = PatientCard.myPatientInsertPS.getGeneratedKeys();
+							if (myPatientGenKeys.next()) {
+								patientKey = myPatientGenKeys.getLong(1);
+							}
+							if (myInsuranceBox.isSelected()) {
+								insertInsurance(patientKey);
+							}
+							if (myAuthorizationBox.isSelected()) {
+								insertInsAuthorization(patientKey);
+							}
+							PatientSearchPanel.this.updateTableModel();
+						}
+					} catch (SQLException ex) {
+						new MSGWindow(ex.getLocalizedMessage());
+						ex.printStackTrace();
+					}
+				}
+				/**
+				 * Validates each field that the user specified. 
+				 *  
+				 * @return boolean value of the fields validity.
+				 */
+				private boolean isValid() {
+					try {
+						if (!validateFields(PatientCard.PATIENT_META_DATA, myPatientTxt)) {
+							new MSGWindow("Please make sure all Patient Fields are not empty");
+							return false;
+						}
+						if (myInsuranceBox.isSelected()) {
+							if (!validateFields(PatientCard.INSURANCE_META_DATA, myInsuranceTxt)) {
+								new MSGWindow("Please enter all Insurance Fields correctly!");
+								return false;
+							}
+						}
+						if (myAuthorizationBox.isSelected()) {
+							if (!validateFields(PatientCard.AUTH_META_DATA, myAuthorizationTxt)) {
+								new MSGWindow("Please enter all Authorization Fields");
+								return false;
+							}
+						}
+					} catch (SQLException e) {
+						new MSGWindow(e.getLocalizedMessage());
+						e.printStackTrace();
+					}
+					return true;
+				}
+			});
+			
+		}
+
+	
+
+		/**
+		 * Validates user data before data is sent to the database by comparing
+		 * atrributes with non null fields with text from the JTextField.
+		 * 
+		 * @param rsmd
+		 *            the meta data of the table's attributes.
+		 * @param txtFields
+		 *            the JTextFields to retrive data from.
+		 * @return the truth value of the validation check.
+		 * @throws SQLException
+		 *             if result set meta data is null or invalid.
+		 */
+		private boolean validateFields(ResultSetMetaData rsmd, ArrayList<JTextField> txtFields) throws SQLException {
+			for (int i = 0; i < txtFields.size(); i++) {
+				if (rsmd.isNullable(i + 2) == ResultSetMetaData.columnNoNulls) {
+					if (txtFields.get(i).getText().isEmpty()) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+
+		/**
+		 * Constructs the JPanel to represent the attributes in the Patient
+		 * Database.
+		 * 
+		 * @param theGroup
+		 *            the group of attributes.
+		 * @param tableName
+		 *            the name of the table.
+		 * @param txtFields
+		 *            a list of text fields to associate names with.
+		 * @return JPanel with components.
+		 */
+		private JPanel createPanel(ArrayList<String> theGroup, String tableName, ArrayList<JTextField> txtFields) {
+			JPanel borderPanel = new JPanel(new ParagraphLayout());
+			NUM_OF_ATTRIBUTES = theGroup.size();
+			myLabels = new JLabel[NUM_OF_ATTRIBUTES];
+			for (int i = 0; i < NUM_OF_ATTRIBUTES; i++) {
+				txtFields.add(new JTextField(TEXT_FIELD_SIZE));
+				myLabels[i] = new JLabel(theGroup.get(i));
+				borderPanel.add(myLabels[i], ParagraphLayout.NEW_PARAGRAPH);
+				borderPanel.add(txtFields.get(i), ParagraphLayout.NEW_LINE);
+			}
+			borderPanel.setBorder(BorderFactory.createTitledBorder(tableName));
+			return borderPanel;
+		}
+
+		/**
+		 * Patient Prepared Statement.
+		 */
 		protected void insertPatient() {
 			try {
-			
 				PatientCard.myPatientInsertPS.setString(1, myPatientTxt.get(0).getText());
 				PatientCard.myPatientInsertPS.setString(2, myPatientTxt.get(1).getText());
 				PatientCard.myPatientInsertPS.setString(3, myPatientTxt.get(2).getText());
@@ -342,6 +418,12 @@ public class PatientSearchPanel extends JPanel {
 			}
 		}
 
+		/**
+		 * Insurance Prepared Statement.
+		 * 
+		 * @param thePatientKey
+		 *            the autogenerated patient id.
+		 */
 		protected void insertInsurance(long thePatientKey) {
 			try {
 				PatientCard.myInsuranceInsertPS.setLong(1, thePatientKey);
@@ -355,6 +437,12 @@ public class PatientSearchPanel extends JPanel {
 			}
 		}
 
+		/**
+		 * Insurance Authroization prepared statement.
+		 * 
+		 * @param thePatientKey
+		 *            the auto generated patient id.
+		 */
 		private void insertInsAuthorization(long thePatientKey) {
 			try {
 				PatientCard.myAuthorizationInsertPS.setLong(1, thePatientKey);
@@ -364,28 +452,22 @@ public class PatientSearchPanel extends JPanel {
 				PatientCard.myAuthorizationInsertPS.setString(5, myAuthorizationTxt.get(3).getText());
 				PatientCard.myAuthorizationInsertPS.executeUpdate();
 			} catch (SQLException ex) {
-				new MSGWindow("Please check that all Insurance authorization fields are entered correctly");
 			}
 		}
 
+		/**
+		 * Toggles Components to determine which textfields are included on
+		 * Insert of Patient.
+		 * 
+		 * @param theCheckBox
+		 *            decides on the toggle state.
+		 * @param thePanel
+		 *            the panel to toggle components on.
+		 */
 		private void toggleComponents(JCheckBox theCheckBox, JPanel thePanel) {
 			for (Component jc : thePanel.getComponents()) {
 				jc.setEnabled(theCheckBox.isSelected());
 			}
-		}
-
-		private JPanel createPanel(ArrayList<String> theGroup, String tableName, ArrayList<JTextField> txtFields) {
-			JPanel borderPanel = new JPanel(new ParagraphLayout());
-			NUM_OF_ATTRIBUTES = theGroup.size();
-			myLabels = new JLabel[NUM_OF_ATTRIBUTES];
-			for (int i = 0; i < NUM_OF_ATTRIBUTES; i++) {
-				txtFields.add(new JTextField(TEXT_FIELD_SIZE));
-				myLabels[i] = new JLabel(theGroup.get(i));
-				borderPanel.add(myLabels[i], ParagraphLayout.NEW_PARAGRAPH);
-				borderPanel.add(txtFields.get(i), ParagraphLayout.NEW_LINE);
-			}
-			borderPanel.setBorder(BorderFactory.createTitledBorder(tableName));
-			return borderPanel;
 		}
 	}
 }

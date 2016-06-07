@@ -1,15 +1,12 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -17,10 +14,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
-
 import model.AnchoredTableModel;
 
 /**
@@ -93,7 +87,6 @@ public class PatientTablePanel extends JPanel
 
 	@Override
 	public void tableChanged(TableModelEvent e) {
-		System.out.println("in table changed");
 		// to do
 	}
 

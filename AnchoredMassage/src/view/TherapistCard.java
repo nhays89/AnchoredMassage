@@ -1,8 +1,6 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -42,9 +40,11 @@ public class TherapistCard extends JPanel {
 	 * therapist meta data
 	 */
 	protected static ResultSetMetaData THERAPIST_META_DATA;
+	
 	/**
 	 * Constructs the Therapist card which will act as a container for its sub
-	 * components.
+	 * components. Initializes prepared statements, and retrieves meta data for 
+	 * therapist. 
 	 */
 	public TherapistCard() {
 		setLayout(new BorderLayout());
@@ -60,14 +60,12 @@ public class TherapistCard extends JPanel {
 		
 		Statement therapistStmt;
 		try {
-			myTherapistInsertPS = AnchoredGUI.DB_CONNECTION.prepareStatement("insert into INSURANCE values(?,?,?,?,?,?,?,?,?,?)");
+			myTherapistInsertPS = AnchoredGUI.DB_CONNECTION.prepareStatement("insert into THERAPIST values(?,?,?,?,?,?,?,?,?,?)");
 			therapistStmt = AnchoredGUI.DB_CONNECTION.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			therapistStmt.execute("Select * from THERAPIST");
 			THERAPIST_META_DATA = therapistStmt.getResultSet().getMetaData();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 }

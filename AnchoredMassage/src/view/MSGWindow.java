@@ -3,23 +3,24 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
-
+/**
+ * Provies support for error messages. 
+ * @author Nicholas A. Hays
+ */
 public class MSGWindow extends WindowAdapter{
+	/**
+	 * Main window.
+	 */
 	JFrame myFrame;
-	JButton btnYes, btnNo;
-	boolean answer;
-	Object mon;
+	/**
+	 * Text area to display error message. 
+	 */
 	JTextArea textArea;
 	public MSGWindow(String message) {
 		myFrame = new JFrame();
@@ -32,7 +33,7 @@ public class MSGWindow extends WindowAdapter{
 		textArea.setWrapStyleWord(true);
 		textArea.setLineWrap(true);
 		textArea.setEditable(false);
-		textArea.append(message);
+		textArea.append(message + " date format is YYYY-MM-DD");
 		textArea.setPreferredSize(new Dimension(300,150));
 		mainPanel.add(textArea, BorderLayout.CENTER);
 		myFrame.setVisible(true);

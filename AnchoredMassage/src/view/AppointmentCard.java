@@ -1,15 +1,11 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.JPanel;
-import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import view.AnchoredGUI;
 
 /**
@@ -54,7 +50,6 @@ public class AppointmentCard extends JPanel {
 		add(myAppointmentSearchPanel, BorderLayout.NORTH);
 		add(myAppointmentTablePanel, BorderLayout.CENTER);
 		myAppointmentTablePanel.addPropertyChangeListener(myAppointmentUpdatePanel);
-		myAppointmentTablePanel.addPropertyChangeListener(myAppointmentSearchPanel);
 		myAppointmentUpdatePanel.addPropertyChangeListener(myAppointmentTablePanel);
 		myAppointmentSearchPanel.addPropertyChangeListener(myAppointmentUpdatePanel);
 		myAppointmentSearchPanel.addPropertyChangeListener(myAppointmentTablePanel);

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import javax.swing.JPanel;
 
 /**
@@ -61,7 +60,10 @@ public class PatientCard extends JPanel {
 		myPatientSearchPanel.addPropertyChangeListener(myPatientTablePanel);
 		myPatientUpdatePanel.addPropertyChangeListener(myPatientTablePanel);
 	}
-
+	
+	/**
+	 * Retrieves meta data from database to use for JLabels, and intializes prepared statements. 
+	 */
 	private void setPatientMetaData() {
 		try {
 			

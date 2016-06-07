@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,7 +69,6 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	 * Constructor for Therapist Information Panel.
 	 */
 	public TherapistUpdatePanel() {
-		// super(Color.DARK_GRAY);
 		setLayout(new ParagraphLayout(40, 30, 10, 10, 10, 10));
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		createComponents();

@@ -4,13 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 
 import javax.swing.BorderFactory;
@@ -29,7 +26,7 @@ import com.jhlabs.awt.ParagraphLayout;
  * 
  *         Panel that will allow users to query and filter the patient table.
  */
-public class AppointmentSearchPanel extends JPanel implements PropertyChangeListener {
+public class AppointmentSearchPanel extends JPanel {
 
 	/**
 	 * Default serial id.
@@ -57,10 +54,6 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 	 */
 	private static int TEXT_FIELD_SIZE = 17;
 	/**
-	 * current selected value.
-	 */
-	private String[] currentSelection;
-	/**
 	 * incorrect Date string.
 	 */
 	private static String incorrectDateString = "Incorrect date format. All dates must be entered as YYYY-MM-DD"
@@ -72,7 +65,7 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 	/**
 	 * Pre compiles insert statement.
 	 */
-	private PreparedStatement prepInsertAppt, prepSearchAppt;
+	private PreparedStatement prepInsertAppt;
 
 	/**
 	 * Constructs the Patient search panel.
@@ -146,7 +139,6 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 			}
 		});
 		this.add(myApptCreateBtn);
-
 	}
 
 	private void insertApptTuple(String[] dataFields) {
@@ -184,53 +176,51 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 		}
 		if (therapistData) {
 			String therapist = "'" + txtTherapistID.getText() + "'";
-			if(patientData) {
-			searchExp.append("AND [Therapist ID] = " + therapist);
+			if (patientData) {
+				searchExp.append("AND [Therapist ID] = " + therapist);
 			} else {
 				searchExp.append("where [Therapist ID] = " + therapist);
 			}
 		}
-		if(dateFromData) {
+		if (dateFromData) {
 			try {
-			 fromDate = "'" + Date.valueOf(txtFromDate.getText()) + "'";
-			 System.out.println(Date.valueOf(txtFromDate.getText()));
-			} catch(IllegalArgumentException e) {
+				fromDate = "'" + Date.valueOf(txtFromDate.getText()) + "'";
+			} catch (IllegalArgumentException e) {
 				new MSGWindow(incorrectDateString);
 				e.printStackTrace();
 				return;
 			}
 		}
-		if(dateToData) {
+		if (dateToData) {
 			try {
-			toDate = "'" + Date.valueOf(txtToDate.getText()) + "'";
-		} catch(IllegalArgumentException e) {
-			new MSGWindow(incorrectDateString);
-			e.printStackTrace();
-			return;
-		}
+				toDate = "'" + Date.valueOf(txtToDate.getText()) + "'";
+			} catch (IllegalArgumentException e) {
+				new MSGWindow(incorrectDateString);
+				e.printStackTrace();
+				return;
+			}
 		}
 		if (dateFromData == true && dateToData == true) {
-			if(therapistData == true || patientData == true) {			
+			if (therapistData == true || patientData == true) {
 				searchExp.append(" AND [Date] BETWEEN " + fromDate + " AND " + toDate);
 			} else {
 				searchExp.append("where [Date] BETWEEN " + fromDate + " AND " + toDate);
 			}
-		} else if(dateFromData == true && dateToData == false ) {
-			 if(therapistData == true || patientData == true) {
-				 searchExp.append(" AND [Date] >= " + fromDate);
-			 } else {
-				 searchExp.append("where [Date] >= " + fromDate); 
-			 }
-		} else if(dateFromData == false && dateToData == true) {
-			if(therapistData == true || patientData == true) {
-				searchExp.append(" AND [Date] <= " +  toDate);
+		} else if (dateFromData == true && dateToData == false) {
+			if (therapistData == true || patientData == true) {
+				searchExp.append(" AND [Date] >= " + fromDate);
+			} else {
+				searchExp.append("where [Date] >= " + fromDate);
+			}
+		} else if (dateFromData == false && dateToData == true) {
+			if (therapistData == true || patientData == true) {
+				searchExp.append(" AND [Date] <= " + toDate);
 			} else {
 				searchExp.append("where [Date] <= " + toDate);
 			}
-		} 	
-			
+		}
+
 		CURRENT_QUERY = searchExp.toString();
-		System.out.println(CURRENT_QUERY);
 		this.firePropertyChange("createResultSet", null, null);
 	}
 
@@ -286,7 +276,6 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 		}
 
 		private void create() {
-
 			try {
 				NUM_OF_ATTRIBUTES = myMetaData.getColumnCount();
 				myLabels = new JLabel[NUM_OF_ATTRIBUTES];
@@ -299,7 +288,6 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 					myDisplay.add(myLabels[i], ParagraphLayout.NEW_PARAGRAPH);
 					myDisplay.add(myTextFields[i], ParagraphLayout.NEW_LINE);
 				}
-
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -311,7 +299,11 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 			this.setVisible(true);
 
 		}
-
+		
+		/**
+		 * Retrieves the text data from the text fields in the search panel.
+		 * @return
+		 */
 		protected String[] getTextFields() {
 			String[] textFields = new String[NUM_OF_ATTRIBUTES];
 			for (int i = 0; i < textFields.length; i++) {
@@ -319,22 +311,13 @@ public class AppointmentSearchPanel extends JPanel implements PropertyChangeList
 			}
 			return textFields;
 		}
-
+		/**
+		 * Clears out the text fields
+		 */
 		protected void clearFields() {
 			for (JTextField f : myTextFields) {
 				f.setText(null);
 			}
-		}
-	}
-
-	/**
-	 * Receives a table selection event to set the text fields in the update
-	 * panel.
-	 */
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("tableSelectionChanged")) {
-			currentSelection = (String[]) evt.getNewValue();
 		}
 	}
 }

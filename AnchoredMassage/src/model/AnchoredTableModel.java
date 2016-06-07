@@ -7,19 +7,34 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
 public class AnchoredTableModel implements TableModel {
-	
+	/**
+	 * Result set that represents the data in the model. 
+	 */
 	private ResultSet resultSet;
+	/**
+	 * Result set meta data.
+	 */
 	private ResultSetMetaData metadata;
+	/**
+	 * Stores the number of columns in the result set. 
+	 */
 	private int numCols;
+	/**
+	 * Stores the number of rows in the result set. 
+	 */
 	private int numRows;
 	
+	/**
+	 * Constructs the table model that will be used for all TableCards. 
+	 * 
+	 * @param rs the result set. 
+	 * @throws SQLException 
+	 */
 	public AnchoredTableModel (ResultSet rs) throws SQLException {
 		if(rs == null) return;
 		 this.resultSet = rs;
 		    this.metadata = this.resultSet.getMetaData();
 		    numCols = metadata.getColumnCount();
-
-		    // Retrieve the number of rows.
 		    this.resultSet.beforeFirst();
 		    this.numRows = 0;
 		    while (this.resultSet.next()) {

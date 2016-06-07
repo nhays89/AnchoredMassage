@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -12,15 +11,10 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,7 +22,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import com.jhlabs.awt.ParagraphLayout;
 
 /**
@@ -97,7 +90,10 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		this.setPreferredSize(new Dimension(400, 1000));
 		this.setVisible(true);
 	}
-
+	
+	/**
+	 * Creates components for update panel.
+	 */
 	private void createComponents() {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.insets = new Insets(10, 10, 10, 10);
@@ -113,7 +109,6 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		JPanel insurancePanel = createPanel(insuranceAttributes, " Insurance ", myInsuranceTxt);
 		JPanel authPanel = createPanel(authAttributes, " Authorization ", myAuthorizationTxt);
 
-
 		myAuthorizationBox = new JCheckBox();
 		myAuthorizationBox.setEnabled(false);
 		myAuthorizationBox.setText("Add Authorization");
@@ -121,26 +116,10 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		myAuthorizationBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent evt) {
-				if (hasInsurance) {
-					if (hasAuthorization) {
-						if (myAuthorizationBox.isSelected()) {
-							myAuthorizationBox.setText(" Authorization data will be updated upon update ");
-						} else {
-							myAuthorizationBox.setText(" Authorization data will be deleted upon update ");
-						}
-					} else {
-						myAuthorizationBox.setText(" Add Authorization ");
-					}
-				} else {
-					if(myAuthorizationBox.isSelected()) {
-						myAuthorizationBox.setText(" Add Authorization ");
-					}
-				}
-
+				notifyAuthorization();
 				toggleComponents((JCheckBox) evt.getSource(), authPanel);
 			}
 		});
-		
 
 		myInsuranceBox = new JCheckBox();
 		myInsuranceBox.setText("Add Insurance");
@@ -148,15 +127,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		myInsuranceBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent evt) {
-				if (hasInsurance) {
-					if (!myInsuranceBox.isSelected()) {
-						myInsuranceBox.setText(" Insurance will be deleted upon update ");
-					} else {
-						myInsuranceBox.setText(" Insurance will be updated upon update ");
-					}
-				} else {
-					myInsuranceBox.setText(" Add Insurance ");
-				}
+				notifyInsurance();
 				myAuthorizationBox.setEnabled(myInsuranceBox.isSelected());
 				toggleComponents((JCheckBox) evt.getSource(), insurancePanel);
 				if (!myInsuranceBox.isSelected()) {
@@ -165,7 +136,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 				}
 			}
 		});
-		
+
 		gbc.gridy++;
 		myDisplayPanel.add(myInsuranceBox, gbc);
 		gbc.gridy++;
@@ -176,97 +147,162 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		myDisplayPanel.add(authPanel, gbc);
 		gbc.gridy++;
 		JButton update = new JButton(" Update ");
-
 		update.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					if (!validateFields(PatientCard.PATIENT_META_DATA, myPatientTxt)) {
-						new MSGWindow("Please make sure all Patient Fields are not empty");
+				
+					if(!checkValidation()) {
 						return;
 					}
-					if (myInsuranceBox.isSelected()) {
-						if (!validateFields(PatientCard.INSURANCE_META_DATA, myInsuranceTxt)) {
-							new MSGWindow("Please enter all Insurance Fields correctly!");
-							return;
-						}
-					}
-					if (myAuthorizationBox.isSelected()) {
-						if (!validateFields(PatientCard.AUTH_META_DATA, myAuthorizationTxt)) {
-							new MSGWindow("Please enter all Authorization Fields");
-							return;
-						}
-					}
-					
 					updatePatient();
-					
-					if (myInsuranceBox.isSelected()) {
-						if (hasInsurance) {
-							updateInsurance();
-						} else {
-							insertInsurance();
-							hasInsurance = true;
-						}
-					} else {
-						if (hasInsurance) {
-							deleteInsurance();
-						} 
-					}
-					if (myAuthorizationBox.isSelected()) {
-						if(hasAuthorization) {
-							updateAuthorization();
-						} else {
-							insertAuthorization();
-							hasAuthorization = true;
-						}
-					} else {
-						if(hasAuthorization) {
-							deleteAuthorization();
-						} 
-					}
+					checkInsurance();
+					checkAuthorization();
 					firePropertyChange("createResultSet", null, null);
-				} catch (SQLException ex) {
-					new MSGWindow(ex.getLocalizedMessage());
-					ex.printStackTrace();
-				}
-			}
-
-			private boolean validateFields(ResultSetMetaData rsmd, ArrayList<JTextField> txtFields)
-					throws SQLException {
-				for (int i = 0; i < txtFields.size(); i++) {
-					if (rsmd.isNullable(i + 2) == ResultSetMetaData.columnNoNulls) {
-						if (txtFields.get(i).getText().isEmpty()) {
-							return false;
-						}
-					}
-				}
-				return true;
-			}
+				} 
 		});
 		gbc.gridy++;
 		gbc.gridwidth = 1;
 		myDisplayPanel.add(update, gbc);
-		
 		JButton deleteBtn = new JButton(" Delete Patient ");
-		deleteBtn.addActionListener(new ActionListener(){
+		deleteBtn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this Patient?", "Delete Patient", JOptionPane.YES_NO_OPTION);
-				if(reply == JOptionPane.YES_OPTION) {
+				int reply = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this Patient?",
+						"Delete Patient", JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
 					System.out.println("in delete");
 					deletePatient();
 					firePropertyChange("createResultSet", null, null);
 				}
 			}
-			
 		});
 		gbc.gridx++;
 		myDisplayPanel.add(deleteBtn, gbc);
 		add(myDisplayPanel);
 		this.setVisible(true);
 	}
+	
+	/**
+	 * Checks to see if the user is updating authorization. 
+	 */
+	protected void checkAuthorization() {
+		if (myAuthorizationBox.isSelected()) {
+			if (hasAuthorization) {
+				updateAuthorization();
+			} else {
+				insertAuthorization();
+				hasAuthorization = true;
+			}
+		} else {
+			if (hasAuthorization) {
+				deleteAuthorization();
+			}
+		}
+	}
+	
+	/**
+	 * Checks to see if the user is updating insurance. 
+	 */
+	protected void checkInsurance() {
+		if (myInsuranceBox.isSelected()) {
+			if (hasInsurance) {
+				updateInsurance();
+			} else {
+				insertInsurance();
+				hasInsurance = true;
+			}
+		} else {
+			if (hasInsurance) {
+				deleteInsurance();
+			}
+		}
+	}
+	
+	/**
+	 * Tests to make sure fields are valid. 
+	 * 
+	 * @return boolean that tests the fields validity. 
+	 */
+	protected boolean checkValidation() {
+		try {
+		if (!validateFields(PatientCard.PATIENT_META_DATA, myPatientTxt)) {
+			new MSGWindow("Please make sure all Patient Fields are not empty");
+			return false;
+		}
+		if (myInsuranceBox.isSelected()) {
+			if (!validateFields(PatientCard.INSURANCE_META_DATA, myInsuranceTxt)) {
+				new MSGWindow("Please enter all Insurance Fields correctly!");
+				return false;
+			}
+		}
+		if (myAuthorizationBox.isSelected()) {
+			if (!validateFields(PatientCard.AUTH_META_DATA, myAuthorizationTxt)) {
+				new MSGWindow("Please enter all Authorization Fields");
+				return false;
+			}
+		}
+		} catch(SQLException e ) {
+			new MSGWindow(e.getLocalizedMessage());
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Notifys user of authorization changes.
+	 */
+	private boolean validateFields(ResultSetMetaData rsmd, ArrayList<JTextField> txtFields)
+			throws SQLException {
+		for (int i = 0; i < txtFields.size(); i++) {
+			if (rsmd.isNullable(i + 2) == ResultSetMetaData.columnNoNulls) {
+				if (txtFields.get(i).getText().isEmpty()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Notifys user of insurance changes.
+	 */
+	protected void notifyInsurance() {
+		if (hasInsurance) {
+			if (!myInsuranceBox.isSelected()) {
+				myInsuranceBox.setText(" Insurance will be deleted upon update ");
+			} else {
+				myInsuranceBox.setText(" Insurance will be updated upon update ");
+			}
+		} else {
+			myInsuranceBox.setText(" Add Insurance ");
+		}
+	}
+	
+	/**
+	 * Notifys user of authorization changes.
+	 */
+	protected void notifyAuthorization() {
+		if (hasInsurance) {
+			if (hasAuthorization) {
+				if (myAuthorizationBox.isSelected()) {
+					myAuthorizationBox.setText(" Authorization data will be updated upon update ");
+				} else {
+					myAuthorizationBox.setText(" Authorization data will be deleted upon update ");
+				}
+			} else {
+				myAuthorizationBox.setText(" Add Authorization ");
+			}
+		} else {
+			if (myAuthorizationBox.isSelected()) {
+				myAuthorizationBox.setText(" Add Authorization ");
+			}
+		}
+	}
 
+	/**
+	 * Update patient prepared statement. 
+	 */
 	protected void updatePatient() {
 		try {
 			System.out.println("in insert");
@@ -286,10 +322,13 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			new MSGWindow("Please check that all Patient Fields are entered correctly.");
 		}
 	}
-
+	
+	/**
+	 * Update patient insurance prepared statment. 
+	 */
 	protected void updateInsurance() {
 		try {
-		
+
 			PatientCard.myInsuranceUpdatePS.setString(1, myInsuranceTxt.get(0).getText());
 			PatientCard.myInsuranceUpdatePS.setString(2, myInsuranceTxt.get(1).getText());
 			PatientCard.myInsuranceUpdatePS.setString(3, myInsuranceTxt.get(2).getText());
@@ -300,10 +339,13 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			new MSGWindow("Please check that all Insurance Fields are entered correctly.");
 		}
 	}
-
+	
+	/**
+	 * Update patient authorization prepared statement.
+	 */
 	private void updateAuthorization() {
 		try {
-			
+
 			PatientCard.myAuthorizationUpdatePS.setString(1, myAuthorizationTxt.get(0).getText());
 			PatientCard.myAuthorizationUpdatePS.setString(2, myAuthorizationTxt.get(1).getText());
 			PatientCard.myAuthorizationUpdatePS.setString(3, myAuthorizationTxt.get(2).getText());
@@ -315,7 +357,10 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			new MSGWindow("Please check that all Insurance authorization fields are entered correctly");
 		}
 	}
-
+	
+	/**
+	 * Insert patient insurance prepared statement. 
+	 */
 	protected void insertInsurance() {
 		try {
 			PatientCard.myInsuranceInsertPS.setInt(1, CURRENT_PATIENT_ID);
@@ -329,7 +374,9 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			new MSGWindow("Please check that all Insurance Fields are entered correctly.");
 		}
 	}
-
+	/**
+	 * Insert patient authorization prepared statement. 
+	 */
 	private void insertAuthorization() {
 		try {
 			PatientCard.myAuthorizationInsertPS.setInt(1, CURRENT_PATIENT_ID);
@@ -343,6 +390,10 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			new MSGWindow("Please check that all Insurance authorization fields are entered correctly");
 		}
 	}
+	
+	/**
+	 * Delete all patient data using prepared statement. 
+	 */
 	private void deletePatient() {
 		try {
 			PatientCard.myPatientDeletePS.setInt(1, CURRENT_PATIENT_ID);
@@ -351,7 +402,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			temp.addAll(myPatientTxt);
 			temp.addAll(myInsuranceTxt);
 			temp.addAll(myAuthorizationTxt);
-			for(JTextField textfield: temp) {
+			for (JTextField textfield : temp) {
 				textfield.setText("");
 			}
 		} catch (SQLException ex) {
@@ -359,32 +410,44 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			new MSGWindow("Please check that all Insurance authorization fields are entered correctly");
 		}
 	}
+	
+	/**
+	 * Delete prepared statment for patient insurance. 
+	 */
 	private void deleteInsurance() {
 		try {
 			PatientCard.myInsuranceDeletePS.setInt(1, CURRENT_PATIENT_ID);
 			PatientCard.myInsuranceDeletePS.executeUpdate();
-			for(JTextField text: myInsuranceTxt) {
+			for (JTextField text : myInsuranceTxt) {
 				text.setText("");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			new MSGWindow("Please check that all Insurance authorization fields are entered correctly");
-			
+
 		}
 	}
+	
+	/**
+	 * Delete prepared statment for patients. 
+	 */
 	private void deleteAuthorization() {
 		try {
 			PatientCard.myAuthorizationDeletePS.setInt(1, CURRENT_PATIENT_ID);
 			PatientCard.myAuthorizationDeletePS.executeUpdate();
-			for(JTextField text: myAuthorizationTxt) {
+			for (JTextField text : myAuthorizationTxt) {
 				text.setText("");
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 			new MSGWindow("Please check that all Insurance authorization fields are entered correctly");
-			
+
 		}
 	}
+	
+	/**
+	 * Determines the group each attribute is in. 
+	 */
 	private void determineGroup() {
 		patientAttributes = new ArrayList<String>();
 		insuranceAttributes = new ArrayList<String>();
@@ -412,7 +475,15 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			}
 		}
 	}
-
+	
+	/**
+	 * Creates components for the Panel. 
+	 * 
+	 * @param theGroup the group of attributes.
+	 * @param tableName the table name.
+	 * @param txtFields the TextFields.
+	 * @return a panel with components.
+	 */
 	private JPanel createPanel(ArrayList<String> theGroup, String tableName, ArrayList<JTextField> txtFields) {
 		JPanel borderPanel = new JPanel(new ParagraphLayout());
 		NUM_OF_ATTRIBUTES = theGroup.size();
@@ -454,19 +525,15 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			myPatientTxt.get(i).setText(rowData[rowDataCounter++]);
 		}
 		for (int j = 0; j < myInsuranceTxt.size(); j++) {
-
 			myInsuranceTxt.get(j).setText(rowData[rowDataCounter++]);
 		}
-
 		if (!myInsuranceTxt.get(0).getText().isEmpty()) {
 			hasInsurance = true;
 			myInsuranceBox.setSelected(true);
-
 		} else {
 			hasInsurance = false;
 			myInsuranceBox.setSelected(false);
 		}
-
 		for (int k = 0; k < myAuthorizationTxt.size(); k++) {
 			myAuthorizationTxt.get(k).setText(rowData[rowDataCounter++]);
 		}
@@ -478,5 +545,4 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 			myAuthorizationBox.setSelected(false);
 		}
 	}
-
 }

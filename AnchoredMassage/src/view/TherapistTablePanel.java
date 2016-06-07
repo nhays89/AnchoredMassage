@@ -1,7 +1,6 @@
 package view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -64,7 +63,10 @@ public class TherapistTablePanel extends JPanel
 		this.setPreferredSize(new Dimension(600, 600));
 		this.setVisible(true);
 	}
-
+	
+	/*(*
+	 * Creates the table model for the therapist. 
+	 */
 	private void createTableModel() {
 		try {
 			Statement stmt;
@@ -122,11 +124,8 @@ public class TherapistTablePanel extends JPanel
 		}
 	}
 
-
 	@Override
 	public void tableChanged(TableModelEvent arg0) {
 		// TODO Auto-generated method stub
-
 	}
-
 }
