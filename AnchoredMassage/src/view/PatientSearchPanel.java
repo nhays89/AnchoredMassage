@@ -62,7 +62,7 @@ public class PatientSearchPanel extends JPanel {
 	/**
 	 * text field length.
 	 */
-	private static int TEXT_FIELD_SIZE = 17;
+	private static int TEXT_FIELD_SIZE = 10;
 
 	/**
 	 * Constructs the Patient search panel.
@@ -70,7 +70,7 @@ public class PatientSearchPanel extends JPanel {
 	public PatientSearchPanel() {
 		CURRENT_QUERY = "SELECT * FROM PATIENT_VIEW";
 		addComponents();
-		this.setPreferredSize(new Dimension(1000, 75));
+		this.setPreferredSize(new Dimension(1000, 50));
 		this.setVisible(true);
 	}
 
@@ -78,22 +78,23 @@ public class PatientSearchPanel extends JPanel {
 	 * adds components to the search panel.
 	 */
 	private void addComponents() {
+		setLayout(new ParagraphLayout(10,10,10,10,10,10));
 		TitledBorder title;
-		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
+		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder());
 		title.setTitlePosition(TitledBorder.TOP);
 		this.setBorder(title);
 		lblPatientID = new JLabel("Patient ID:");
-		add(lblPatientID, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblPatientID, ParagraphLayout.STRETCH_H);
 		txtPatientID = new JTextField(TEXT_FIELD_SIZE);
-		add(txtPatientID, ParagraphLayout.NEW_LINE);
+		add(txtPatientID);
 		lblPatientFName = new JLabel("Patient First Name:");
-		add(lblPatientFName, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblPatientFName, ParagraphLayout.STRETCH_H);
 		txtPatientFName = new JTextField(TEXT_FIELD_SIZE);
-		add(txtPatientFName, ParagraphLayout.NEW_LINE);
+		add(txtPatientFName);
 		lblPatientLName = new JLabel("Patient Last Name:");
-		add(lblPatientLName, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblPatientLName, ParagraphLayout.STRETCH_H);
 		txtPatientLName = new JTextField(TEXT_FIELD_SIZE);
-		add(txtPatientLName, ParagraphLayout.NEW_LINE);
+		add(txtPatientLName);
 		myPatientSearchBtn = new JButton(" Search ");
 		myPatientCreateBtn = new JButton(" Create ");
 		myPatientSearchBtn.addActionListener(new ActionListener() {
@@ -112,8 +113,8 @@ public class PatientSearchPanel extends JPanel {
 			}
 		});
 
-		this.add(myPatientSearchBtn, ParagraphLayout.NEW_PARAGRAPH);
-		this.add(myPatientCreateBtn);
+		this.add(myPatientSearchBtn, ParagraphLayout.STRETCH_H);
+		this.add(myPatientCreateBtn, ParagraphLayout.STRETCH_H);
 
 	}
 
@@ -130,7 +131,7 @@ public class PatientSearchPanel extends JPanel {
 	 * Builds SQL expression from the search fields.
 	 */
 	private void updateSearchResults() {
-		StringBuilder searchExp = new StringBuilder("Select * from PATIENT ");
+		StringBuilder searchExp = new StringBuilder("Select * from PATIENT_VIEWr ");
 		if(!txtPatientID.getText().isEmpty()) searchExp.append("where [Patient ID] = '" + txtPatientID.getText() + "'");
 		if(!txtPatientFName.getText().isEmpty()) {
 			if(!txtPatientID.getText().isEmpty()) {
@@ -389,7 +390,8 @@ public class PatientSearchPanel extends JPanel {
 			NUM_OF_ATTRIBUTES = theGroup.size();
 			myLabels = new JLabel[NUM_OF_ATTRIBUTES];
 			for (int i = 0; i < NUM_OF_ATTRIBUTES; i++) {
-				txtFields.add(new JTextField(TEXT_FIELD_SIZE));
+				JTextField txtField = new JTextField(TEXT_FIELD_SIZE);
+				txtFields.add(txtField);
 				myLabels[i] = new JLabel(theGroup.get(i));
 				borderPanel.add(myLabels[i], ParagraphLayout.NEW_PARAGRAPH);
 				borderPanel.add(txtFields.get(i), ParagraphLayout.NEW_LINE);

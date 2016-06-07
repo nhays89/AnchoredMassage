@@ -45,7 +45,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	/**
 	 * TextField Size
 	 */
-	private static int TEXT_FIELD_SIZE = 15;
+	private static int PATIENT_TEXT_SIZE = 16, INSURANCE_TEXT_SIZE = 14, AUTHORIZATION_TEXT_SIZE = 13, TEXT_FIELD_SIZE = 10;
 	/**
 	 * Labels
 	 */
@@ -86,7 +86,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		myDisplayPanel = new JPanel(new GridBagLayout());
 		determineGroup();
 		createComponents();
-		setLayout(new ParagraphLayout(00, 30, 10, 10, 10, 10));
+		setLayout(new ParagraphLayout(00, 10, 10, 10, 10, 10));
 		this.setPreferredSize(new Dimension(400, 1000));
 		this.setVisible(true);
 	}
@@ -488,8 +488,17 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		JPanel borderPanel = new JPanel(new ParagraphLayout());
 		NUM_OF_ATTRIBUTES = theGroup.size();
 		myLabels = new JLabel[NUM_OF_ATTRIBUTES];
+		int size;
+		if(tableName.equals(" Patient ")) {
+			size = PATIENT_TEXT_SIZE;
+		} else if(tableName.equals(" Insurance ")) {
+			size = INSURANCE_TEXT_SIZE;
+		} else {
+			size = AUTHORIZATION_TEXT_SIZE;
+		}
+		
 		for (int i = 0; i < NUM_OF_ATTRIBUTES; i++) {
-			txtFields.add(new JTextField(TEXT_FIELD_SIZE));
+			txtFields.add(new JTextField(size));
 			myLabels[i] = new JLabel(theGroup.get(i));
 			borderPanel.add(myLabels[i], ParagraphLayout.NEW_PARAGRAPH);
 			borderPanel.add(txtFields.get(i), ParagraphLayout.NEW_LINE);

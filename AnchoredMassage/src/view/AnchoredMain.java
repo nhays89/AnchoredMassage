@@ -84,7 +84,7 @@ public class AnchoredMain {
 		JLabel dbNameLbl = new JLabel("DataBase Name: ");
 		JFormattedTextField userNameTxt = new JFormattedTextField("nhays89");
 		userNameTxt.setColumns(15);
-		JPasswordField passwordTxt = new JPasswordField("71907190");
+		JPasswordField passwordTxt = new JPasswordField("password");
 		passwordTxt.setColumns(15);
 		JFormattedTextField serverNameTxt = new JFormattedTextField("VADER");
 		serverNameTxt.setColumns(15);

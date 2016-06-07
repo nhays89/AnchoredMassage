@@ -1,14 +1,16 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import com.jhlabs.awt.ParagraphLayout;
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
@@ -91,46 +93,51 @@ public class AnchoredGUI extends JFrame {
 	 * The navigation bar.
 	 */
 	private void createNav() {
-		final JPanel navPanel = new JPanel(new ParagraphLayout(50, 60, 12, 11, 4, 4));
-		navPanel.setPreferredSize(new Dimension(200, 1000));
-		this.getContentPane().add(navPanel, BorderLayout.WEST);
 
-		JButton myPatientBtn = new JButton("     Patient     ");
-		myPatientBtn.addActionListener(new ActionListener() {
+		final JMenuBar menuBar = new JMenuBar();
+		menuBar.setBackground(Color.darkGray);
+		String patient = "Patient", therapist = "Therapist", appointment = "Appointment";
+		this.setJMenuBar(menuBar);
+		
+		JMenu selectMenu = new JMenu(" View ");
+		JMenuItem mntmPatient = new JMenuItem(" Patient ");
+		selectMenu.add(mntmPatient);
+		mntmPatient.addActionListener( new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout myCardLayout = (CardLayout) myCards.getLayout();
 				myCardLayout.show(myCards, PATIENTCARD);
-				setTitle(PATIENTCARD);
+				selectMenu.setText(patient);
 			}
 		});
 
-		JButton myTherapistBtn = new JButton("   Therapist   ");
-		myTherapistBtn.addActionListener(new ActionListener() {
+		JMenuItem mntmTherapist = new JMenuItem(" Therapist ");
+		selectMenu.add(mntmTherapist);
+		mntmTherapist.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout myCardLayout = (CardLayout) myCards.getLayout();
 				myCardLayout.show(myCards, THERAPISTCARD);
-				setTitle(THERAPISTCARD);
+				selectMenu.setText(therapist);
 			}
 		});
 
-		JButton myAppointmentBtn = new JButton("Appointment");
-		myAppointmentBtn.addActionListener(new ActionListener() {
+		JMenuItem mntmAppt = new JMenuItem(" Appointment ");
+		selectMenu.add(mntmAppt);
+		mntmAppt.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				CardLayout myCardLayout = (CardLayout) myCards.getLayout();
 				myCardLayout.show(myCards, APPOINTMENTCARD);
-				setTitle(APPOINTMENTCARD);
+				selectMenu.setText(appointment);
 			}
 		});
 
-		navPanel.add(myPatientBtn, ParagraphLayout.NEW_PARAGRAPH);
-		navPanel.add(myTherapistBtn, ParagraphLayout.NEW_PARAGRAPH);
-		navPanel.add(myAppointmentBtn, ParagraphLayout.NEW_PARAGRAPH);
+		menuBar.add(selectMenu, ParagraphLayout.NEW_PARAGRAPH);
+	
 	}
 
 	/**

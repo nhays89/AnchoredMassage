@@ -52,7 +52,7 @@ public class AppointmentSearchPanel extends JPanel {
 	/**
 	 * text field length.
 	 */
-	private static int TEXT_FIELD_SIZE = 17;
+	private static int TEXT_FIELD_SIZE = 10;
 	/**
 	 * incorrect Date string.
 	 */
@@ -71,10 +71,11 @@ public class AppointmentSearchPanel extends JPanel {
 	 * Constructs the Patient search panel.
 	 */
 	public AppointmentSearchPanel() {
+		this.setLayout(new ParagraphLayout(10,10,10,10,10,10));
 		CURRENT_QUERY = "SELECT * FROM APPOINTMENT";
 		setPreparedStatement();
-		addComponents();
-		this.setPreferredSize(new Dimension(1000, 75));
+		addSearchComps();
+		this.setPreferredSize(new Dimension(600, 50));
 		this.setVisible(true);
 	}
 
@@ -92,27 +93,27 @@ public class AppointmentSearchPanel extends JPanel {
 	/**
 	 * adds components to the search panel.
 	 */
-	private void addComponents() {
+	private void addSearchComps() {
 		TitledBorder title;
-		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
+		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder());
 		title.setTitlePosition(TitledBorder.TOP);
 		this.setBorder(title);
 		lblPatientID = new JLabel("Patient ID: ");
-		add(lblPatientID, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblPatientID, ParagraphLayout.STRETCH_H);
 		txtPatientID = new JTextField(TEXT_FIELD_SIZE);
-		add(txtPatientID, ParagraphLayout.NEW_LINE);
+		add(txtPatientID);
 		lblTherapistID = new JLabel("Therapist ID: ");
-		add(lblTherapistID, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblTherapistID, ParagraphLayout.STRETCH_H);
 		txtTherapistID = new JTextField(TEXT_FIELD_SIZE);
-		add(txtTherapistID, ParagraphLayout.NEW_LINE);
+		add(txtTherapistID);
 		lblFromDate = new JLabel("Date From: ");
-		add(lblFromDate, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblFromDate, ParagraphLayout.STRETCH_H);
 		txtFromDate = new JTextField(TEXT_FIELD_SIZE);
-		add(txtFromDate, ParagraphLayout.NEW_LINE);
+		add(txtFromDate);
 		lblToDate = new JLabel("To: ");
-		add(lblToDate, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblToDate, ParagraphLayout.STRETCH_H);
 		txtToDate = new JTextField(TEXT_FIELD_SIZE);
-		add(txtToDate, ParagraphLayout.NEW_LINE);
+		add(txtToDate);
 		myApptSearchBtn = new JButton("Search");
 		myApptCreateBtn = new JButton("Create");
 

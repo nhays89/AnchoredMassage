@@ -55,12 +55,13 @@ public class TherapistSearchPanel extends JPanel {
 	/**
 	 * text field length.
 	 */
-	private static int TEXT_FIELD_SIZE = 17;
+	private static int TEXT_FIELD_SIZE = 10;
 
 	public TherapistSearchPanel() {
+		this.setLayout(new ParagraphLayout(10,10,10,10,10,10));
 		CURRENT_QUERY = "SELECT * FROM THERAPIST";
 		addComponents();
-		this.setPreferredSize(new Dimension(1000, 75));
+		this.setPreferredSize(new Dimension(1000, 50));
 		this.setVisible(true);
 	}
 	/**
@@ -68,21 +69,21 @@ public class TherapistSearchPanel extends JPanel {
 	 */
 	private void addComponents() {
 		TitledBorder title;
-		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
+		title = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder());
 		title.setTitlePosition(TitledBorder.TOP);
 		this.setBorder(title);
 		lblTherapistID = new JLabel("Therapist ID:");
-		add(lblTherapistID, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblTherapistID);
 		txtTherapistID = new JTextField(TEXT_FIELD_SIZE);
-		add(txtTherapistID, ParagraphLayout.NEW_LINE);
+		add(txtTherapistID);
 		lblTherapistFName = new JLabel("Therapist First Name:");
-		add(lblTherapistFName, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblTherapistFName);
 		txtTherapistFName = new JTextField(TEXT_FIELD_SIZE);
-		add(txtTherapistFName, ParagraphLayout.NEW_LINE);
+		add(txtTherapistFName);
 		lblTherapistLName = new JLabel("Therapist Last Name:");
-		add(lblTherapistLName, ParagraphLayout.NEW_PARAGRAPH);
+		add(lblTherapistLName);
 		txtTherapistLName = new JTextField(TEXT_FIELD_SIZE);
-		add(txtTherapistLName, ParagraphLayout.NEW_LINE);
+		add(txtTherapistLName);
 		myTherapistSearchBtn = new JButton(" Search ");
 		myTherapistCreateBtn = new JButton(" Create ");
 		myTherapistSearchBtn.addActionListener(new ActionListener() {
