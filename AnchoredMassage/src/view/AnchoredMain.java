@@ -73,8 +73,8 @@ public class AnchoredMain {
 		connDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		connDialog.setLocationRelativeTo(null);
 		
-		connDialog.setSize(new Dimension(400, 400));
-		connDialog.setTitle("Establish a connection to the Database");
+		connDialog.setSize(new Dimension(360, 350));
+		connDialog.setTitle("Establish a Connection");
 		JPanel connPanel = new JPanel(new ParagraphLayout());
 		JLabel userNameLbl = new JLabel("UserName: ");
 		JLabel passwordLbl = new JLabel("Password: ");
@@ -82,15 +82,15 @@ public class AnchoredMain {
 		JLabel instanceNameLbl = new JLabel("Instance Name: ");
 		JLabel portNumberLbl = new JLabel("Port Number: ");
 		JLabel dbNameLbl = new JLabel("DataBase Name: ");
-		JFormattedTextField userNameTxt = new JFormattedTextField("nhays89");
+		JFormattedTextField userNameTxt = new JFormattedTextField("username");
 		userNameTxt.setColumns(15);
 		JPasswordField passwordTxt = new JPasswordField("password");
 		passwordTxt.setColumns(15);
-		JFormattedTextField serverNameTxt = new JFormattedTextField("VADER");
+		JFormattedTextField serverNameTxt = new JFormattedTextField("server");
 		serverNameTxt.setColumns(15);
-		JFormattedTextField instanceNameTxt = new JFormattedTextField("SQLEXPRESS");
+		JFormattedTextField instanceNameTxt = new JFormattedTextField("instance");
 		instanceNameTxt.setColumns(15);
-		JFormattedTextField portNumberTxt = new JFormattedTextField("3119");
+		JFormattedTextField portNumberTxt = new JFormattedTextField("port");
 		portNumberTxt.setColumns(15);
 		JFormattedTextField dbNameTxt = new JFormattedTextField("AnchoredMassage");
 		dbNameTxt.setColumns(15);
@@ -108,7 +108,6 @@ public class AnchoredMain {
 		connPanel.add(dbNameTxt, ParagraphLayout.NEW_LINE);
 		JButton connectBtn = new JButton("Connect");
 		connectBtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				DATA_SOURCE = new SQLServerDataSource();

@@ -114,7 +114,7 @@ public class TherapistSearchPanel extends JPanel {
 	 */
 	private void updateSearchResults() {
 		StringBuilder searchExp = new StringBuilder("Select * from THERAPIST ");
-		if(!txtTherapistID.getText().isEmpty()) searchExp.append("where [Patient ID] = '" + txtTherapistID.getText() + "'");
+		if(!txtTherapistID.getText().isEmpty()) searchExp.append("where [Therapist ID] = '" + txtTherapistID.getText() + "'");
 		if(!txtTherapistFName.getText().isEmpty()) {
 			if(!txtTherapistID.getText().isEmpty()) {
 				searchExp.append(" AND [First Name] = '" + txtTherapistFName.getText()  + "'");
@@ -124,7 +124,7 @@ public class TherapistSearchPanel extends JPanel {
 		}
 		if(!txtTherapistLName.getText().isEmpty()) {
 			if(!txtTherapistID.getText().isEmpty() || !(txtTherapistFName.getText().isEmpty())) {
-				searchExp.append(" AND [Last Name] = '" + txtTherapistFName.getText()  + "'");
+				searchExp.append(" AND [Last Name] LIKE '%" + txtTherapistLName.getText()  + "%'");
 			} else {
 				searchExp.append("where [Last Name] LIKE '%" + txtTherapistLName.getText() + "%'");
 			}
@@ -154,7 +154,6 @@ public class TherapistSearchPanel extends JPanel {
 			new MSGWindow(e.getLocalizedMessage());
 		}
 		this.firePropertyChange("createResultSet", null, null);
-
 	}
 
 	

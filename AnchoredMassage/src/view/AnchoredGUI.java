@@ -146,7 +146,9 @@ public class AnchoredGUI extends JFrame {
 	private void initGUI() {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double width = screenSize.getWidth();
+		System.out.println(width);
 		double height = screenSize.getHeight();
+		System.out.println(height);
 		this.setSize(new Dimension(( (int) width), (int) height));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Anchored Massage");

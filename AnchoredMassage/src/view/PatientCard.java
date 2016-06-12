@@ -73,7 +73,7 @@ public class PatientCard extends JPanel {
 			myPatientUpdatePS = AnchoredGUI.DB_CONNECTION.prepareStatement("update PATIENT SET [First Name] = ?, [Last Name] = ?, Street = ?, City = ?, State = ?, Zip = ?, [Date of Birth] = ?, "
 					+ "[E-mail] = ?, [Cell #] = ? where [Patient ID] = ?");
 			myInsuranceUpdatePS = AnchoredGUI.DB_CONNECTION.prepareStatement("update INSURANCE SET [Policy Number] = ?, [Group Number] = ?, [Group Name] = ?, [Deductible] = ? where [Patient ID] = ?");
-			myAuthorizationUpdatePS = AnchoredGUI.DB_CONNECTION.prepareStatement("update INS_AUTHORIZATION SET [Authorization Number] = ?, [Number of Visits Authorized] = ?, [Effective Start Date] = ?, [Effective End Date] = ? where [Patient ID] = ?");
+			myAuthorizationUpdatePS = AnchoredGUI.DB_CONNECTION.prepareStatement("update INS_AUTHORIZATION SET [Authorization #] = ?, [Number of Visits] = ?, [Eff. Start Date] = ?, [Eff. End Date] = ? where [Patient ID] = ?");
 			myPatientDeletePS = AnchoredGUI.DB_CONNECTION.prepareStatement("delete from PATIENT where [Patient ID] = ?");
 			myInsuranceDeletePS = AnchoredGUI.DB_CONNECTION.prepareStatement("delete from INSURANCE where [Patient ID] = ?");
 			myAuthorizationDeletePS = AnchoredGUI.DB_CONNECTION.prepareStatement("delete from INS_AUTHORIZATION where [Patient ID] = ?");

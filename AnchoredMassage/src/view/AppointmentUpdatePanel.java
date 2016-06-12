@@ -76,7 +76,7 @@ public class AppointmentUpdatePanel extends JPanel implements PropertyChangeList
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		createComponents();
 		addListeners();
-		this.setPreferredSize(new Dimension(400, 1000));
+		this.setPreferredSize(new Dimension(400, 600));
 		this.setVisible(true);
 	}
 

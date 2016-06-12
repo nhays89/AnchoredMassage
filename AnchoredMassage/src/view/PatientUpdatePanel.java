@@ -87,7 +87,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		determineGroup();
 		createComponents();
 		setLayout(new ParagraphLayout(00, 10, 10, 10, 10, 10));
-		this.setPreferredSize(new Dimension(400, 1000));
+		this.setPreferredSize(new Dimension(400, 800));
 		this.setVisible(true);
 	}
 	
@@ -96,7 +96,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 	 */
 	private void createComponents() {
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(10, 10, 10, 10);
+		gbc.insets = new Insets(5, 35, 0, 10);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 3;
@@ -163,6 +163,7 @@ public class PatientUpdatePanel extends JPanel implements PropertyChangeListener
 		gbc.gridy++;
 		gbc.gridwidth = 1;
 		myDisplayPanel.add(update, gbc);
+		gbc.insets = new Insets(5, 10, 0, 10);
 		JButton deleteBtn = new JButton(" Delete Patient ");
 		deleteBtn.addActionListener(new ActionListener() {
 

@@ -124,6 +124,7 @@ public class PatientSearchPanel extends JPanel {
 	 * @param queryString
 	 */
 	private void updateTableModel() {
+		System.out.println("in update table model");
 		firePropertyChange("createResultSet", null, null);
 	}
 
@@ -131,7 +132,7 @@ public class PatientSearchPanel extends JPanel {
 	 * Builds SQL expression from the search fields.
 	 */
 	private void updateSearchResults() {
-		StringBuilder searchExp = new StringBuilder("Select * from PATIENT_VIEWr ");
+		StringBuilder searchExp = new StringBuilder("Select * from PATIENT_VIEW ");
 		if(!txtPatientID.getText().isEmpty()) searchExp.append("where [Patient ID] = '" + txtPatientID.getText() + "'");
 		if(!txtPatientFName.getText().isEmpty()) {
 			if(!txtPatientID.getText().isEmpty()) {
@@ -286,7 +287,7 @@ public class PatientSearchPanel extends JPanel {
 		}
 
 		/**
-		 * Adds a Jbutton to the panel which initiates the 
+		 * Adds a Jbutton to the panel which initiates the insert.
 		 * 
 		 * @param sumbitBtn the JButton. 
 		 */
@@ -308,6 +309,7 @@ public class PatientSearchPanel extends JPanel {
 							if (myAuthorizationBox.isSelected()) {
 								insertInsAuthorization(patientKey);
 							}
+							System.out.println("getting here");
 							PatientSearchPanel.this.updateTableModel();
 						}
 					} catch (SQLException ex) {

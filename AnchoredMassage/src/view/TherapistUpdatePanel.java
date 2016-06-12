@@ -73,7 +73,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 		myDBConn = AnchoredGUI.DB_CONNECTION;
 		createComponents();
 		addListeners();
-		this.setPreferredSize(new Dimension(400, 1000));
+		this.setPreferredSize(new Dimension(400, 600));
 		this.setVisible(true);
 	}
 
@@ -95,6 +95,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 				if (i == 0) {
 					myTherapistTxt[i].setEditable(false);
 					myTherapistTxt[i].setToolTipText("cannot edit primary key");
+					myTherapistTxt[i].setEnabled(false);
 				}
 				myTherapistLbl[i] = new JLabel(rsmd.getColumnLabel(i + 1));
 				add(myTherapistLbl[i], ParagraphLayout.NEW_PARAGRAPH);
@@ -134,7 +135,7 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	 */
 	private void deleteTherapistDB() {
 		if (!myTherapistTxt[0].getText().equals("")) {
-			String deleteString = "DELETE FROM THERAPIST WHERE therapistID ='" + myTherapistTxt[0].getText() + "'";
+			String deleteString = "DELETE FROM THERAPIST WHERE [Therapist ID] ='" + myTherapistTxt[0].getText() + "'";
 			executeQuery(deleteString);
 			firePropertyChange("createResultSet", null, myTherapistTxt[0]);
 		}
@@ -147,12 +148,14 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 	 */
 	public void updateTherapistDB() {
 
-		String updateString = "update dbo.THERAPIST SET " + myTxtFieldNames[1] + "='" + myTherapistTxt[1].getText()
-				+ "', " + myTxtFieldNames[2] + "='" + myTherapistTxt[2].getText() + "', " + myTxtFieldNames[3] + "='"
-				+ myTherapistTxt[3].getText() + "', " + myTxtFieldNames[4] + "='" + myTherapistTxt[4].getText() + "', "
-				+ myTxtFieldNames[5] + "='" + myTherapistTxt[5].getText() + "', " + myTxtFieldNames[6] + "='"
-				+ myTherapistTxt[6].getText() + "', " + myTxtFieldNames[7] + "='" + myTherapistTxt[7].getText()
-				+ "' where therapistID ='" + myTherapistTxt[0].getText() + "'";
+		String updateString = "update dbo.THERAPIST SET [" + myTxtFieldNames[1] + "] = '" + myTherapistTxt[1].getText()
+				+ "', [" + myTxtFieldNames[2] + "] = '" + myTherapistTxt[2].getText() + "', [" + myTxtFieldNames[3] + "] = '"
+				+ myTherapistTxt[3].getText() + "', [" + myTxtFieldNames[4] + "] = '" + myTherapistTxt[4].getText() + "', ["
+				+ myTxtFieldNames[5] + "] = '" + myTherapistTxt[5].getText() + "', [" + myTxtFieldNames[6] + "] = '"
+				+ myTherapistTxt[6].getText() + "', [" + myTxtFieldNames[7] + "] = '" + myTherapistTxt[7].getText() + "', ["
+				+ myTxtFieldNames[8] + "] = '" + myTherapistTxt[8].getText() + "', [" + myTxtFieldNames[9] + "] = '" + myTherapistTxt[9].getText() + "', [" 
+				+ myTxtFieldNames[10] + "] = '" + myTherapistTxt[10].getText()
+				+ "' where [Therapist ID] = '" + myTherapistTxt[0].getText() + "'";
 		executeQuery(updateString);
 	}
 
@@ -172,11 +175,6 @@ public class TherapistUpdatePanel extends JPanel implements PropertyChangeListen
 		}
 		// if successful?
 		this.firePropertyChange("createResultSet", null, null);
-		for (
-
-		JTextField t : myTherapistTxt) {
-			t.setText(null);
-		}
 	}
 
 	/**
