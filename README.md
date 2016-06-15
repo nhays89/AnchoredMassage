@@ -26,3 +26,12 @@ A java application built for a massage therapy clinic.
   <li>Drop down selection</li>
   <li>Improved Date/Time conversion handling</li>
 </ul>
+
+##Patient Panel
+<img src="https://github.com/nhays89/AnchoredMassage/blob/master/AnchoredMassage/img/patient_screen_shot.png"/>
+
+##Appointment Panel
+<img src="https://github.com/nhays89/AnchoredMassage/blob/master/AnchoredMassage/img/appointment_panel.png"/>
+
+##Therapist Panel
+<img src="https://github.com/nhays89/AnchoredMassage/blob/master/AnchoredMassage/img/therapist_panel.png"/>
